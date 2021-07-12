@@ -1,0 +1,1160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="15.0.1" class="java.beans.XMLDecoder">
+ <object class="com.jformdesigner.model.FormModel">
+  <void property="contentType">
+   <string>form/swing</string>
+  </void>
+  <void property="root">
+   <object class="com.jformdesigner.model.FormRoot">
+    <void method="add">
+     <object class="com.jformdesigner.model.FormContainer">
+      <string>javax.swing.JPanel</string>
+      <object class="com.jformdesigner.model.FormLayoutManager">
+       <class>javax.swing.BoxLayout</class>
+       <void method="setProperty">
+        <string>axis</string>
+        <int>1</int>
+       </void>
+      </object>
+      <void property="name">
+       <string>this</string>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormContainer" id="FormContainer0">
+        <string>org.jdesktop.swingx.JXPanel</string>
+        <object class="com.jformdesigner.model.FormLayoutManager">
+         <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+         <void method="setProperty">
+          <string>$columnCount</string>
+          <int>2</int>
+         </void>
+         <void method="setProperty">
+          <string>$rowCount</string>
+          <int>1</int>
+         </void>
+         <void method="setProperty">
+          <string>hGap</string>
+          <int>12</int>
+         </void>
+         <void method="setProperty">
+          <string>vGap</string>
+          <int>0</int>
+         </void>
+         <void method="setProperty">
+          <string>margin</string>
+          <object class="java.awt.Insets">
+           <int>6</int>
+           <int>6</int>
+           <int>6</int>
+           <int>6</int>
+          </object>
+         </void>
+        </object>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableLocal</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
+        <void property="name">
+         <string>panel2</string>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent" id="FormComponent0">
+          <string>org.jdesktop.swingx.JXLabel</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>&lt;html&gt;&lt;p&gt;Trial Balance Extractor&lt;/p&gt;&lt;/html&gt;</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object class="java.awt.Font">
+            <string>Segoe UI</string>
+            <int>1</int>
+            <int>26</int>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>maxLineSpan</string>
+           <int>1</int>
+          </void>
+          <void method="setProperty">
+           <string>preferredSize</string>
+           <object class="java.awt.Dimension">
+            <int>86</int>
+            <int>81</int>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>minimumSize</string>
+           <object class="java.awt.Dimension">
+            <int>275</int>
+            <int>81</int>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>horizontalAlignment</string>
+           <int>2</int>
+          </void>
+          <void method="setProperty">
+           <string>maximumSize</string>
+           <object class="java.awt.Dimension">
+            <int>2147483647</int>
+            <int>27</int>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>lineWrap</string>
+           <boolean>true</boolean>
+          </void>
+          <void property="name">
+           <string>label1</string>
+          </void>
+          <void method="auxiliary">
+           <void method="setProperty">
+            <string>JavaCodeGenerator.variableLocal</string>
+            <boolean>true</boolean>
+           </void>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.intellij.uiDesigner.core.GridConstraints</class>
+          <void method="setProperty">
+           <string>useParentLayout</string>
+           <boolean>false</boolean>
+          </void>
+          <void method="setProperty">
+           <string>fill</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormContainer" id="FormContainer1">
+          <string>org.jdesktop.swingx.JXPanel</string>
+          <object class="com.jformdesigner.model.FormLayoutManager">
+           <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+           <void method="setProperty">
+            <string>$columnCount</string>
+            <int>1</int>
+           </void>
+           <void method="setProperty">
+            <string>$rowCount</string>
+            <int>1</int>
+           </void>
+           <void method="setProperty">
+            <string>hGap</string>
+            <int>6</int>
+           </void>
+           <void method="setProperty">
+            <string>vGap</string>
+            <int>0</int>
+           </void>
+          </object>
+          <void method="auxiliary">
+           <void method="setProperty">
+            <string>JavaCodeGenerator.variableLocal</string>
+            <boolean>true</boolean>
+           </void>
+          </void>
+          <void property="name">
+           <string>panel1</string>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormContainer" id="FormContainer2">
+            <string>org.jdesktop.swingx.JXPanel</string>
+            <object class="com.jformdesigner.model.FormLayoutManager">
+             <class>org.jdesktop.swingx.VerticalLayout</class>
+             <void method="setProperty">
+              <string>gap</string>
+              <int>6</int>
+             </void>
+            </object>
+            <void method="auxiliary">
+             <void method="setProperty">
+              <string>JavaCodeGenerator.variableLocal</string>
+              <boolean>true</boolean>
+             </void>
+            </void>
+            <void property="name">
+             <string>panel5</string>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormContainer" id="FormContainer3">
+              <string>org.jdesktop.swingx.JXPanel</string>
+              <object class="com.jformdesigner.model.FormLayoutManager">
+               <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+               <void method="setProperty">
+                <string>$columnCount</string>
+                <int>3</int>
+               </void>
+               <void method="setProperty">
+                <string>$rowCount</string>
+                <int>1</int>
+               </void>
+               <void method="setProperty">
+                <string>hGap</string>
+                <int>6</int>
+               </void>
+               <void method="setProperty">
+                <string>vGap</string>
+                <int>0</int>
+               </void>
+              </object>
+              <void method="auxiliary">
+               <void method="setProperty">
+                <string>JavaCodeGenerator.variableLocal</string>
+                <boolean>true</boolean>
+               </void>
+              </void>
+              <void property="name">
+               <string>fileSelect</string>
+              </void>
+              <void method="add">
+               <object class="com.jformdesigner.model.FormComponent" id="FormComponent1">
+                <string>org.jdesktop.swingx.JXLabel</string>
+                <void method="setProperty">
+                 <string>text</string>
+                 <string>Save Location</string>
+                </void>
+                <void method="setProperty">
+                 <string>labelFor</string>
+                 <object class="com.jformdesigner.model.FormReference">
+                  <string>fileLineInput</string>
+                 </object>
+                </void>
+                <void property="name">
+                 <string>outputDirectoryLabel</string>
+                </void>
+                <void method="auxiliary">
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.variableLocal</string>
+                  <boolean>true</boolean>
+                 </void>
+                </void>
+               </object>
+               <object class="com.jformdesigner.model.FormLayoutConstraints">
+                <class>com.intellij.uiDesigner.core.GridConstraints</class>
+               </object>
+              </void>
+              <void method="add">
+               <object class="com.jformdesigner.model.FormComponent" id="FormComponent2">
+                <string>org.jdesktop.swingx.JXTextField</string>
+                <void method="setProperty">
+                 <string>action</string>
+                 <object class="com.jformdesigner.model.FormReference">
+                  <string>fileLine</string>
+                 </object>
+                </void>
+                <void method="setProperty">
+                 <string>enabled</string>
+                 <boolean>false</boolean>
+                </void>
+                <void property="name">
+                 <string>fileLineInput</string>
+                </void>
+                <void method="auxiliary">
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.variableGetter</string>
+                  <boolean>true</boolean>
+                 </void>
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.postInitCode</string>
+                  <string>${field}.setInputVerifier(new FileVerifier());</string>
+                 </void>
+                </void>
+               </object>
+               <object class="com.jformdesigner.model.FormLayoutConstraints">
+                <class>com.intellij.uiDesigner.core.GridConstraints</class>
+                <void method="setProperty">
+                 <string>column</string>
+                 <int>1</int>
+                </void>
+                <void method="setProperty">
+                 <string>hSizePolicy</string>
+                 <int>7</int>
+                </void>
+                <void method="setProperty">
+                 <string>fill</string>
+                 <int>1</int>
+                </void>
+               </object>
+              </void>
+              <void method="add">
+               <object class="com.jformdesigner.model.FormComponent" id="FormComponent3">
+                <string>org.jdesktop.swingx.JXButton</string>
+                <void method="setProperty">
+                 <string>action</string>
+                 <object class="com.jformdesigner.model.FormReference">
+                  <string>browseAction</string>
+                 </object>
+                </void>
+                <void property="name">
+                 <string>browse</string>
+                </void>
+                <void method="auxiliary">
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.variableGetter</string>
+                  <boolean>true</boolean>
+                 </void>
+                </void>
+               </object>
+               <object class="com.jformdesigner.model.FormLayoutConstraints">
+                <class>com.intellij.uiDesigner.core.GridConstraints</class>
+                <void method="setProperty">
+                 <string>column</string>
+                 <int>2</int>
+                </void>
+               </object>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormContainer" id="FormContainer4">
+              <string>org.jdesktop.swingx.JXPanel</string>
+              <object class="com.jformdesigner.model.FormLayoutManager">
+               <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+               <void method="setProperty">
+                <string>$columnCount</string>
+                <int>4</int>
+               </void>
+               <void method="setProperty">
+                <string>$rowCount</string>
+                <int>1</int>
+               </void>
+               <void method="setProperty">
+                <string>hGap</string>
+                <int>6</int>
+               </void>
+               <void method="setProperty">
+                <string>vGap</string>
+                <int>0</int>
+               </void>
+              </object>
+              <void method="auxiliary">
+               <void method="setProperty">
+                <string>JavaCodeGenerator.variableLocal</string>
+                <boolean>true</boolean>
+               </void>
+              </void>
+              <void property="name">
+               <string>extractLayout</string>
+              </void>
+              <void method="add">
+               <object class="com.jformdesigner.model.FormComponent" id="FormComponent4">
+                <string>org.jdesktop.swingx.JXLabel</string>
+                <void method="setProperty">
+                 <string>text</string>
+                 <string>Select Company</string>
+                </void>
+                <void property="name">
+                 <string>companySelect</string>
+                </void>
+                <void method="auxiliary">
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.variableLocal</string>
+                  <boolean>true</boolean>
+                 </void>
+                </void>
+               </object>
+               <object class="com.jformdesigner.model.FormLayoutConstraints">
+                <class>com.intellij.uiDesigner.core.GridConstraints</class>
+               </object>
+              </void>
+              <void method="add">
+               <object class="com.jformdesigner.model.FormComponent" id="FormComponent5">
+                <string>com.formdev.flatlaf.extras.components.FlatComboBox</string>
+                <void method="setProperty">
+                 <string>model</string>
+                 <object class="javax.swing.DefaultComboBoxModel">
+                  <void property="selectedItem">
+                   <string>4826 Verne Road LLC</string>
+                  </void>
+                  <void method="addElement">
+                   <string>4826 Verne Road LLC</string>
+                  </void>
+                  <void method="addElement">
+                   <string>Beach House Investments LLC</string>
+                  </void>
+                  <void method="addElement">
+                   <string>Cajun Affiliates LLC</string>
+                  </void>
+                  <void method="addElement">
+                   <string>Mahaffey Events &amp; Tents LLC</string>
+                  </void>
+                  <void method="addElement">
+                   <string>Mahaffey Industrial Contractor</string>
+                  </void>
+                  <void method="addElement">
+                   <string>Mahaffey Tent &amp; Awning Co. Inc</string>
+                  </void>
+                  <void method="addElement">
+                   <string>Mahaffey USA LLC</string>
+                  </void>
+                 </object>
+                </void>
+                <void method="setProperty">
+                 <string>selectedIndex</string>
+                 <int>6</int>
+                </void>
+                <void property="name">
+                 <string>companySelector</string>
+                </void>
+                <void method="auxiliary">
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.typeParameters</string>
+                  <string>String</string>
+                 </void>
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.variableGetter</string>
+                  <boolean>true</boolean>
+                 </void>
+                </void>
+               </object>
+               <object class="com.jformdesigner.model.FormLayoutConstraints">
+                <class>com.intellij.uiDesigner.core.GridConstraints</class>
+                <void method="setProperty">
+                 <string>column</string>
+                 <int>1</int>
+                </void>
+                <void method="setProperty">
+                 <string>fill</string>
+                 <int>1</int>
+                </void>
+                <void method="setProperty">
+                 <string>hSizePolicy</string>
+                 <int>7</int>
+                </void>
+               </object>
+              </void>
+              <void method="add">
+               <object class="com.jformdesigner.model.FormComponent" id="FormComponent6">
+                <string>com.jformdesigner.designer.wrapper.HSpacer</string>
+                <void property="name">
+                 <string>hSpacer2</string>
+                </void>
+                <void method="auxiliary">
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.variableLocal</string>
+                  <boolean>true</boolean>
+                 </void>
+                </void>
+               </object>
+               <object class="com.jformdesigner.model.FormLayoutConstraints">
+                <class>com.intellij.uiDesigner.core.GridConstraints</class>
+                <void method="setProperty">
+                 <string>column</string>
+                 <int>2</int>
+                </void>
+               </object>
+              </void>
+              <void method="add">
+               <object class="com.jformdesigner.model.FormContainer" id="FormContainer5">
+                <string>javax.swing.JPanel</string>
+                <object class="com.jformdesigner.model.FormLayoutManager">
+                 <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+                 <void method="setProperty">
+                  <string>$columnCount</string>
+                  <int>2</int>
+                 </void>
+                 <void method="setProperty">
+                  <string>$rowCount</string>
+                  <int>1</int>
+                 </void>
+                 <void method="setProperty">
+                  <string>hGap</string>
+                  <int>3</int>
+                 </void>
+                 <void method="setProperty">
+                  <string>vGap</string>
+                  <int>0</int>
+                 </void>
+                </object>
+                <void method="auxiliary">
+                 <void method="setProperty">
+                  <string>JavaCodeGenerator.variableLocal</string>
+                  <boolean>true</boolean>
+                 </void>
+                </void>
+                <void property="name">
+                 <string>panel4</string>
+                </void>
+                <void method="add">
+                 <object class="com.jformdesigner.model.FormComponent" id="FormComponent7">
+                  <string>org.jdesktop.swingx.JXButton</string>
+                  <void method="setProperty">
+                   <string>action</string>
+                   <object class="com.jformdesigner.model.FormReference">
+                    <string>extractAction</string>
+                   </object>
+                  </void>
+                  <void property="name">
+                   <string>extract</string>
+                  </void>
+                  <void method="auxiliary">
+                   <void method="setProperty">
+                    <string>JavaCodeGenerator.variableGetter</string>
+                    <boolean>true</boolean>
+                   </void>
+                  </void>
+                 </object>
+                 <object class="com.jformdesigner.model.FormLayoutConstraints">
+                  <class>com.intellij.uiDesigner.core.GridConstraints</class>
+                 </object>
+                </void>
+                <void method="add">
+                 <object class="com.jformdesigner.model.FormComponent" id="FormComponent8">
+                  <string>org.jdesktop.swingx.JXButton</string>
+                  <void method="setProperty">
+                   <string>action</string>
+                   <object class="com.jformdesigner.model.FormReference">
+                    <string>cancelAction</string>
+                   </object>
+                  </void>
+                  <void method="setProperty">
+                   <string>defaultCapable</string>
+                   <boolean>false</boolean>
+                  </void>
+                  <void property="name">
+                   <string>cancel</string>
+                  </void>
+                  <void method="auxiliary">
+                   <void method="setProperty">
+                    <string>JavaCodeGenerator.variableGetter</string>
+                    <boolean>true</boolean>
+                   </void>
+                  </void>
+                 </object>
+                 <object class="com.jformdesigner.model.FormLayoutConstraints">
+                  <class>com.intellij.uiDesigner.core.GridConstraints</class>
+                  <void method="setProperty">
+                   <string>column</string>
+                   <int>1</int>
+                  </void>
+                 </object>
+                </void>
+               </object>
+               <object class="com.jformdesigner.model.FormLayoutConstraints">
+                <class>com.intellij.uiDesigner.core.GridConstraints</class>
+                <void method="setProperty">
+                 <string>column</string>
+                 <int>3</int>
+                </void>
+                <void method="setProperty">
+                 <string>fill</string>
+                 <int>3</int>
+                </void>
+               </object>
+              </void>
+             </object>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.intellij.uiDesigner.core.GridConstraints</class>
+            <void method="setProperty">
+             <string>fill</string>
+             <int>3</int>
+            </void>
+            <void method="setProperty">
+             <string>hSizePolicy</string>
+             <int>7</int>
+            </void>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.intellij.uiDesigner.core.GridConstraints</class>
+          <void method="setProperty">
+           <string>column</string>
+           <int>1</int>
+          </void>
+          <void method="setProperty">
+           <string>fill</string>
+           <int>3</int>
+          </void>
+          <void method="setProperty">
+           <string>hSizePolicy</string>
+           <int>7</int>
+          </void>
+         </object>
+        </void>
+       </object>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormComponent" id="FormComponent9">
+        <string>javax.swing.JSeparator</string>
+        <void method="setProperty">
+         <string>border</string>
+         <object class="javax.swing.border.EtchedBorder">
+          <int>1</int>
+          <null/>
+          <null/>
+         </object>
+        </void>
+        <void property="name">
+         <string>separator1</string>
+        </void>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableLocal</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
+       </object>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormContainer" id="FormContainer6">
+        <string>org.jdesktop.swingx.JXPanel</string>
+        <object class="com.jformdesigner.model.FormLayoutManager">
+         <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+         <void method="setProperty">
+          <string>$columnCount</string>
+          <int>1</int>
+         </void>
+         <void method="setProperty">
+          <string>$rowCount</string>
+          <int>2</int>
+         </void>
+         <void method="setProperty">
+          <string>hGap</string>
+          <int>0</int>
+         </void>
+         <void method="setProperty">
+          <string>vGap</string>
+          <int>12</int>
+         </void>
+         <void method="setProperty">
+          <string>margin</string>
+          <object class="java.awt.Insets">
+           <int>0</int>
+           <int>6</int>
+           <int>6</int>
+           <int>6</int>
+          </object>
+         </void>
+        </object>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableLocal</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
+        <void property="name">
+         <string>panel3</string>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent" id="FormComponent10">
+          <string>org.jdesktop.swingx.JXLabel</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Progress</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object class="java.awt.Font">
+            <string>Segoe UI</string>
+            <int>1</int>
+            <int>20</int>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>horizontalAlignment</string>
+           <int>0</int>
+          </void>
+          <void method="setProperty">
+           <string>maxLineSpan</string>
+           <int>1</int>
+          </void>
+          <void method="setProperty">
+           <string>textAlignment</string>
+           <object class="java.lang.Enum" method="valueOf">
+            <class>org.jdesktop.swingx.JXLabel$TextAlignment</class>
+            <string>CENTER</string>
+           </object>
+          </void>
+          <void property="name">
+           <string>xLabel6</string>
+          </void>
+          <void method="auxiliary">
+           <void method="setProperty">
+            <string>JavaCodeGenerator.variableLocal</string>
+            <boolean>true</boolean>
+           </void>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.intellij.uiDesigner.core.GridConstraints</class>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormContainer" id="FormContainer7">
+          <string>org.jdesktop.swingx.JXPanel</string>
+          <object class="com.jformdesigner.model.FormLayoutManager">
+           <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+           <void method="setProperty">
+            <string>$columnCount</string>
+            <int>1</int>
+           </void>
+           <void method="setProperty">
+            <string>$rowCount</string>
+            <int>5</int>
+           </void>
+           <void method="setProperty">
+            <string>hGap</string>
+            <int>3</int>
+           </void>
+           <void method="setProperty">
+            <string>vGap</string>
+            <int>6</int>
+           </void>
+          </object>
+          <void method="auxiliary">
+           <void method="setProperty">
+            <string>JavaCodeGenerator.variableLocal</string>
+            <boolean>true</boolean>
+           </void>
+          </void>
+          <void property="name">
+           <string>prog1</string>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormContainer" id="FormContainer8">
+            <string>org.jdesktop.swingx.JXPanel</string>
+            <object class="com.jformdesigner.model.FormLayoutManager">
+             <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+             <void method="setProperty">
+              <string>$columnCount</string>
+              <int>3</int>
+             </void>
+             <void method="setProperty">
+              <string>$rowCount</string>
+              <int>1</int>
+             </void>
+             <void method="setProperty">
+              <string>hGap</string>
+              <int>6</int>
+             </void>
+             <void method="setProperty">
+              <string>vGap</string>
+              <int>0</int>
+             </void>
+            </object>
+            <void method="auxiliary">
+             <void method="setProperty">
+              <string>JavaCodeGenerator.variableLocal</string>
+              <boolean>true</boolean>
+             </void>
+            </void>
+            <void property="name">
+             <string>xPanel1</string>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent" id="FormComponent11">
+              <string>org.jdesktop.swingx.JXLabel</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>Overall</string>
+              </void>
+              <void property="name">
+               <string>xLabel11</string>
+              </void>
+              <void method="auxiliary">
+               <void method="setProperty">
+                <string>JavaCodeGenerator.variableLocal</string>
+                <boolean>true</boolean>
+               </void>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.intellij.uiDesigner.core.GridConstraints</class>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent" id="FormComponent12">
+              <string>javax.swing.JSeparator</string>
+              <void method="setProperty">
+               <string>orientation</string>
+               <int>1</int>
+              </void>
+              <void property="name">
+               <string>separator11</string>
+              </void>
+              <void method="auxiliary">
+               <void method="setProperty">
+                <string>JavaCodeGenerator.variableLocal</string>
+                <boolean>true</boolean>
+               </void>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.intellij.uiDesigner.core.GridConstraints</class>
+              <void method="setProperty">
+               <string>column</string>
+               <int>1</int>
+              </void>
+              <void method="setProperty">
+               <string>fill</string>
+               <int>2</int>
+              </void>
+              <void method="setProperty">
+               <string>vSizePolicy</string>
+               <int>7</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent" id="FormComponent13">
+              <string>com.formdev.flatlaf.extras.components.FlatProgressBar</string>
+              <void method="setProperty">
+               <string>stringPainted</string>
+               <boolean>true</boolean>
+              </void>
+              <void property="name">
+               <string>overallProgressBar</string>
+              </void>
+              <void method="auxiliary">
+               <void method="setProperty">
+                <string>JavaCodeGenerator.variableGetter</string>
+                <boolean>true</boolean>
+               </void>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.intellij.uiDesigner.core.GridConstraints</class>
+              <void method="setProperty">
+               <string>hSizePolicy</string>
+               <int>7</int>
+              </void>
+              <void method="setProperty">
+               <string>useParentLayout</string>
+               <boolean>false</boolean>
+              </void>
+              <void method="setProperty">
+               <string>fill</string>
+               <int>1</int>
+              </void>
+              <void method="setProperty">
+               <string>column</string>
+               <int>2</int>
+              </void>
+             </object>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.intellij.uiDesigner.core.GridConstraints</class>
+            <void method="setProperty">
+             <string>fill</string>
+             <int>3</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent" id="FormComponent14">
+            <string>org.balance.extractor.gui.ui.components.ProgressGL</string>
+            <void property="name">
+             <string>progressTB1</string>
+            </void>
+            <void method="auxiliary">
+             <void method="setProperty">
+              <string>JavaCodeGenerator.variableGetter</string>
+              <boolean>true</boolean>
+             </void>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.intellij.uiDesigner.core.GridConstraints</class>
+            <void method="setProperty">
+             <string>row</string>
+             <int>1</int>
+            </void>
+            <void method="setProperty">
+             <string>fill</string>
+             <int>3</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent" id="FormComponent15">
+            <string>org.balance.extractor.gui.ui.components.ProgressGL</string>
+            <void property="name">
+             <string>progress1</string>
+            </void>
+            <void method="auxiliary">
+             <void method="setProperty">
+              <string>JavaCodeGenerator.variableGetter</string>
+              <boolean>true</boolean>
+             </void>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.intellij.uiDesigner.core.GridConstraints</class>
+            <void method="setProperty">
+             <string>row</string>
+             <int>2</int>
+            </void>
+            <void method="setProperty">
+             <string>fill</string>
+             <int>3</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent" id="FormComponent16">
+            <string>org.balance.extractor.gui.ui.components.ProgressGL</string>
+            <void property="name">
+             <string>progress2</string>
+            </void>
+            <void method="auxiliary">
+             <void method="setProperty">
+              <string>JavaCodeGenerator.variableGetter</string>
+              <boolean>true</boolean>
+             </void>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.intellij.uiDesigner.core.GridConstraints</class>
+            <void method="setProperty">
+             <string>row</string>
+             <int>3</int>
+            </void>
+            <void method="setProperty">
+             <string>fill</string>
+             <int>3</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent" id="FormComponent17">
+            <string>org.balance.extractor.gui.ui.components.ProgressGL</string>
+            <void property="name">
+             <string>progress3</string>
+            </void>
+            <void method="auxiliary">
+             <void method="setProperty">
+              <string>JavaCodeGenerator.variableGetter</string>
+              <boolean>true</boolean>
+             </void>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.intellij.uiDesigner.core.GridConstraints</class>
+            <void method="setProperty">
+             <string>row</string>
+             <int>4</int>
+            </void>
+            <void method="setProperty">
+             <string>fill</string>
+             <int>3</int>
+            </void>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.intellij.uiDesigner.core.GridConstraints</class>
+          <void method="setProperty">
+           <string>fill</string>
+           <int>1</int>
+          </void>
+          <void method="setProperty">
+           <string>row</string>
+           <int>1</int>
+          </void>
+          <void method="setProperty">
+           <string>vSizePolicy</string>
+           <int>7</int>
+          </void>
+          <void method="setProperty">
+           <string>anchor</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+       </object>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>180</int>
+        <int>45</int>
+       </object>
+      </void>
+      <void method="setProperty">
+       <string>size</string>
+       <object class="java.awt.Dimension">
+        <int>875</int>
+        <int>405</int>
+       </object>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="com.jformdesigner.model.FormComponent" id="FormComponent18">
+      <string>javax.swing.JFileChooser</string>
+      <void method="setProperty">
+       <string>fileSelectionMode</string>
+       <int>1</int>
+      </void>
+      <void property="name">
+       <string>fileChooser</string>
+      </void>
+      <void method="auxiliary">
+       <void method="setProperty">
+        <string>JavaCodeGenerator.variableGetter</string>
+        <boolean>true</boolean>
+       </void>
+       <void method="setProperty">
+        <string>JavaCodeGenerator.postInitCode</string>
+        <string>${field}.setCurrentDirectory(Paths.get(&quot;./&quot;).toFile());</string>
+       </void>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>435</int>
+        <int>535</int>
+       </object>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="com.jformdesigner.model.FormNonVisual" id="FormNonVisual0">
+      <string>javax.swing.AbstractAction</string>
+      <void method="setProperty">
+       <string>$action.Name</string>
+       <string>Browse</string>
+      </void>
+      <void method="auxiliary">
+       <void method="setProperty">
+        <string>JavaCodeGenerator.className</string>
+        <string>Browse</string>
+       </void>
+       <void method="setProperty">
+        <string>JavaCodeGenerator.variableLocal</string>
+        <boolean>true</boolean>
+       </void>
+      </void>
+      <void property="name">
+       <string>browseAction</string>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>70</int>
+        <int>465</int>
+       </object>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="com.jformdesigner.model.FormNonVisual" id="FormNonVisual1">
+      <string>javax.swing.AbstractAction</string>
+      <void method="setProperty">
+       <string>$action.Name</string>
+       <string>Extract</string>
+      </void>
+      <void method="auxiliary">
+       <void method="setProperty">
+        <string>JavaCodeGenerator.className</string>
+        <string>Extract</string>
+       </void>
+       <void method="setProperty">
+        <string>JavaCodeGenerator.variableLocal</string>
+        <boolean>true</boolean>
+       </void>
+      </void>
+      <void property="name">
+       <string>extractAction</string>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>195</int>
+        <int>545</int>
+       </object>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="com.jformdesigner.model.FormNonVisual" id="FormNonVisual2">
+      <string>javax.swing.AbstractAction</string>
+      <void method="setProperty">
+       <string>$action.Name</string>
+       <string>Cancel</string>
+      </void>
+      <void method="setProperty">
+       <string>enabled</string>
+       <boolean>false</boolean>
+      </void>
+      <void method="auxiliary">
+       <void method="setProperty">
+        <string>JavaCodeGenerator.className</string>
+        <string>Cancel</string>
+       </void>
+       <void method="setProperty">
+        <string>JavaCodeGenerator.variableLocal</string>
+        <boolean>true</boolean>
+       </void>
+      </void>
+      <void property="name">
+       <string>cancelAction</string>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>90</int>
+        <int>545</int>
+       </object>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="com.jformdesigner.model.FormNonVisual" id="FormNonVisual3">
+      <string>javax.swing.AbstractAction</string>
+      <void method="setProperty">
+       <string>$action.Name</string>
+       <string>TextFileLine</string>
+      </void>
+      <void method="auxiliary">
+       <void method="setProperty">
+        <string>JavaCodeGenerator.className</string>
+        <string>TextFileLine</string>
+       </void>
+       <void method="setProperty">
+        <string>JavaCodeGenerator.variableLocal</string>
+        <boolean>true</boolean>
+       </void>
+      </void>
+      <void property="name">
+       <string>fileLine</string>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>180</int>
+        <int>460</int>
+       </object>
+      </void>
+     </object>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

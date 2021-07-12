@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="IntelliJ IDEA GridLayout">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/intellij_forms_rt.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

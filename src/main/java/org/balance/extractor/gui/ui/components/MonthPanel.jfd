@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="15.0.1" class="java.beans.XMLDecoder">
+ <object class="com.jformdesigner.model.FormModel">
+  <void property="contentType">
+   <string>form/swing</string>
+  </void>
+  <void property="root">
+   <object class="com.jformdesigner.model.FormRoot">
+    <void method="add">
+     <object class="com.jformdesigner.model.FormContainer">
+      <string>javax.swing.JPanel</string>
+      <object class="com.jformdesigner.model.FormLayoutManager">
+       <class>com.intellij.uiDesigner.core.GridLayoutManager</class>
+       <void method="setProperty">
+        <string>$columnCount</string>
+        <int>4</int>
+       </void>
+       <void method="setProperty">
+        <string>$rowCount</string>
+        <int>1</int>
+       </void>
+       <void method="setProperty">
+        <string>hGap</string>
+        <int>6</int>
+       </void>
+       <void method="setProperty">
+        <string>vGap</string>
+        <int>0</int>
+       </void>
+      </object>
+      <void method="addEvent">
+       <object class="com.jformdesigner.model.FormEvent">
+        <string>java.beans.PropertyChangeListener</string>
+        <string>propertyChange</string>
+        <string>thisPropertyChange</string>
+        <boolean>true</boolean>
+        <string>enabled</string>
+       </object>
+      </void>
+      <void property="name">
+       <string>this</string>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormComponent" id="FormComponent0">
+        <string>org.jdesktop.swingx.JXLabel</string>
+        <void method="setProperty">
+         <string>text</string>
+         <string>Month</string>
+        </void>
+        <void property="name">
+         <string>xLabel1</string>
+        </void>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableLocal</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
+       </object>
+       <object class="com.jformdesigner.model.FormLayoutConstraints">
+        <class>com.intellij.uiDesigner.core.GridConstraints</class>
+        <void method="setProperty">
+         <string>fill</string>
+         <int>1</int>
+        </void>
+       </object>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormComponent" id="FormComponent1">
+        <string>com.formdev.flatlaf.extras.components.FlatComboBox</string>
+        <void method="setProperty">
+         <string>model</string>
+         <object class="javax.swing.DefaultComboBoxModel">
+          <void property="selectedItem">
+           <string>January</string>
+          </void>
+          <void method="addElement">
+           <string>January</string>
+          </void>
+          <void method="addElement">
+           <string>February</string>
+          </void>
+          <void method="addElement">
+           <string>March</string>
+          </void>
+          <void method="addElement">
+           <string>April</string>
+          </void>
+          <void method="addElement">
+           <string>May</string>
+          </void>
+          <void method="addElement">
+           <string>June</string>
+          </void>
+          <void method="addElement">
+           <string>July</string>
+          </void>
+          <void method="addElement">
+           <string>August</string>
+          </void>
+          <void method="addElement">
+           <string>September</string>
+          </void>
+          <void method="addElement">
+           <string>October</string>
+          </void>
+          <void method="addElement">
+           <string>November</string>
+          </void>
+          <void method="addElement">
+           <string>December</string>
+          </void>
+         </object>
+        </void>
+        <void property="name">
+         <string>month</string>
+        </void>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.typeParameters</string>
+          <string>String</string>
+         </void>
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableGetter</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
+        <void method="addEvent">
+         <object class="com.jformdesigner.model.FormEvent">
+          <string>java.awt.event.ActionListener</string>
+          <string>actionPerformed</string>
+          <string>monthActionPerformed</string>
+          <boolean>true</boolean>
+         </object>
+        </void>
+       </object>
+       <object class="com.jformdesigner.model.FormLayoutConstraints">
+        <class>com.intellij.uiDesigner.core.GridConstraints</class>
+        <void method="setProperty">
+         <string>fill</string>
+         <int>1</int>
+        </void>
+        <void method="setProperty">
+         <string>column</string>
+         <int>1</int>
+        </void>
+       </object>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormComponent" id="FormComponent2">
+        <string>org.jdesktop.swingx.JXLabel</string>
+        <void method="setProperty">
+         <string>text</string>
+         <string>Year</string>
+        </void>
+        <void property="name">
+         <string>xLabel2</string>
+        </void>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableLocal</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
+       </object>
+       <object class="com.jformdesigner.model.FormLayoutConstraints">
+        <class>com.intellij.uiDesigner.core.GridConstraints</class>
+        <void method="setProperty">
+         <string>column</string>
+         <int>2</int>
+        </void>
+        <void method="setProperty">
+         <string>fill</string>
+         <int>1</int>
+        </void>
+       </object>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormComponent" id="FormComponent3">
+        <string>com.formdev.flatlaf.extras.components.FlatComboBox</string>
+        <void method="setProperty">
+         <string>model</string>
+         <object class="javax.swing.DefaultComboBoxModel">
+          <void property="selectedItem">
+           <string>2021</string>
+          </void>
+          <void method="addElement">
+           <string>2021</string>
+          </void>
+          <void method="addElement">
+           <string>2020</string>
+          </void>
+          <void method="addElement">
+           <string>2019</string>
+          </void>
+          <void method="addElement">
+           <string>2018</string>
+          </void>
+          <void method="addElement">
+           <string>2017</string>
+          </void>
+          <void method="addElement">
+           <string>2016</string>
+          </void>
+          <void method="addElement">
+           <string>2015</string>
+          </void>
+          <void method="addElement">
+           <string>2014</string>
+          </void>
+          <void method="addElement">
+           <string>2013</string>
+          </void>
+          <void method="addElement">
+           <string>2012</string>
+          </void>
+          <void method="addElement">
+           <string>2011</string>
+          </void>
+          <void method="addElement">
+           <string>2010</string>
+          </void>
+          <void method="addElement">
+           <string>2009</string>
+          </void>
+          <void method="addElement">
+           <string>2008</string>
+          </void>
+          <void method="addElement">
+           <string>2007</string>
+          </void>
+          <void method="addElement">
+           <string>2006</string>
+          </void>
+          <void method="addElement">
+           <string>2005</string>
+          </void>
+          <void method="addElement">
+           <string>2004</string>
+          </void>
+          <void method="addElement">
+           <string>2003</string>
+          </void>
+          <void method="addElement">
+           <string>2002</string>
+          </void>
+          <void method="addElement">
+           <string>2001</string>
+          </void>
+          <void method="addElement">
+           <string>2000</string>
+          </void>
+          <void method="addElement">
+           <string>1999</string>
+          </void>
+          <void method="addElement">
+           <string>1998</string>
+          </void>
+          <void method="addElement">
+           <string>1997</string>
+          </void>
+          <void method="addElement">
+           <string>1996</string>
+          </void>
+          <void method="addElement">
+           <string>1995</string>
+          </void>
+          <void method="addElement">
+           <string>1994</string>
+          </void>
+          <void method="addElement">
+           <string>1993</string>
+          </void>
+          <void method="addElement">
+           <string>1992</string>
+          </void>
+          <void method="addElement">
+           <string>1991</string>
+          </void>
+          <void method="addElement">
+           <string>1990</string>
+          </void>
+          <void method="addElement">
+           <string>1989</string>
+          </void>
+          <void method="addElement">
+           <string>1988</string>
+          </void>
+          <void method="addElement">
+           <string>1987</string>
+          </void>
+          <void method="addElement">
+           <string>1986</string>
+          </void>
+          <void method="addElement">
+           <string>1985</string>
+          </void>
+          <void method="addElement">
+           <string>1984</string>
+          </void>
+          <void method="addElement">
+           <string>1983</string>
+          </void>
+          <void method="addElement">
+           <string>1982</string>
+          </void>
+          <void method="addElement">
+           <string>1981</string>
+          </void>
+          <void method="addElement">
+           <string>1980</string>
+          </void>
+          <void method="addElement">
+           <string>1979</string>
+          </void>
+          <void method="addElement">
+           <string>1978</string>
+          </void>
+          <void method="addElement">
+           <string>1977</string>
+          </void>
+          <void method="addElement">
+           <string>1976</string>
+          </void>
+          <void method="addElement">
+           <string>1975</string>
+          </void>
+          <void method="addElement">
+           <string>1974</string>
+          </void>
+          <void method="addElement">
+           <string>1973</string>
+          </void>
+          <void method="addElement">
+           <string>1972</string>
+          </void>
+          <void method="addElement">
+           <string>1971</string>
+          </void>
+          <void method="addElement">
+           <string>1970</string>
+          </void>
+         </object>
+        </void>
+        <void property="name">
+         <string>year</string>
+        </void>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.typeParameters</string>
+          <string>String</string>
+         </void>
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableGetter</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
+        <void method="addEvent">
+         <object class="com.jformdesigner.model.FormEvent">
+          <string>java.awt.event.ActionListener</string>
+          <string>actionPerformed</string>
+          <string>yearActionPerformed</string>
+          <boolean>true</boolean>
+         </object>
+        </void>
+       </object>
+       <object class="com.jformdesigner.model.FormLayoutConstraints">
+        <class>com.intellij.uiDesigner.core.GridConstraints</class>
+        <void method="setProperty">
+         <string>column</string>
+         <int>3</int>
+        </void>
+        <void method="setProperty">
+         <string>fill</string>
+         <int>1</int>
+        </void>
+       </object>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>450</int>
+        <int>100</int>
+       </object>
+      </void>
+      <void method="setProperty">
+       <string>size</string>
+       <object class="java.awt.Dimension">
+        <int>400</int>
+        <int>300</int>
+       </object>
+      </void>
+     </object>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

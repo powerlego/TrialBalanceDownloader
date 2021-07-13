@@ -5,9 +5,11 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.balance.data.mapping.tb.TBMapper;
 import org.balance.data.mapping.tb.TrialBalanceGLMapper;
+import org.balance.data.mapping.template.TemplateMapper;
 import org.balance.data.objects.Balances;
 import org.balance.data.objects.GLEntries;
 import org.balance.data.writing.tb.TBWriter;
+import org.balance.data.writing.template.TemplateWriter;
 import org.balance.extractor.driver.Driver;
 import org.balance.extractor.gui.ui.components.ProgressGL;
 import org.balance.extractor.gui.ui.tb.TrialBalance;
@@ -48,11 +50,11 @@ public class TBExtract extends Extractor {
      */
     private static final Logger logger = LogManager.getLogger(TBExtract.class);
 
-    private final TrialBalance     ui;
-    private final List<String>     datesGL;
-    private final AtomicInteger    dateSelector;
-    private final AtomicInteger    glSelector;
-    private final AtomicInteger tbSelector;
+    private final TrialBalance       ui;
+    private final List<String>       datesGL;
+    private final AtomicInteger      dateSelector;
+    private final AtomicInteger      glSelector;
+    private final AtomicInteger      tbSelector;
     private final ProgressGL[]       progressGLList;
     private final ThreadPoolExecutor service;
 
@@ -65,9 +67,9 @@ public class TBExtract extends Extractor {
         this.tbSelector = new AtomicInteger();
         this.service = (ThreadPoolExecutor) CustomExecutors.newFixedThreadPool(3);
         this.progressGLList = new ProgressGL[]{
-            ui.getProgress1(),
-            ui.getProgress2(),
-            ui.getProgress3()
+                ui.getProgress1(),
+                ui.getProgress2(),
+                ui.getProgress3()
         };
         this.ui.getOverallProgressBar().setMaximum((2 * datesGL.size()) + 1);
     }
@@ -202,10 +204,14 @@ public class TBExtract extends Extractor {
                                                    "//p[text()='Only show lines where \"Posting Date\" is']/" +
                                                    "ancestor::div[@class='ms-nav-band-container']//input")
                     );
-                } catch (TimeoutException e){
-                    new Actions(driver).sendKeys(Keys.ESCAPE).perform();
+                }
+                catch (TimeoutException e) {
+                    driver.quit();
+                    driver = Driver.createDriver(downloadDir);
+                    LoginProcess.loginGLEntry(driver, company);
                     element
-                            = driver.findElement(By.xpath("//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
+                            = driver.findElement(By.xpath(
+                            "//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
                     new Actions(driver).contextClick(element).perform();
                     Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
                     Waits.waitForLoad(driver);
@@ -297,12 +303,13 @@ public class TBExtract extends Extractor {
                     data.add(values);
                 }
                 driver.navigate().refresh();
-                try{
+                try {
                     Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
-                } catch (TimeoutException e){
+                }
+                catch (TimeoutException e) {
                     driver.quit();
                     driver = Driver.createDriver(downloadDir);
-                    LoginProcess.loginGLEntry(driver,company);
+                    LoginProcess.loginGLEntry(driver, company);
                 }
                 this.progressContainer.getProgressBar().setValue(0);
             }
@@ -435,7 +442,7 @@ public class TBExtract extends Extractor {
                 }
                 depts.add((String) debitTable.get(0).get(i));
             }*/
-            String period = "''..C"+date;
+            String period = "''..C" + date;
             driver = Driver.createDriver(downloadDir);
             this.progressContainer.getCompany().setText(company);
             this.progressContainer.getPeriod().setText(date);
@@ -486,12 +493,14 @@ public class TBExtract extends Extractor {
                                                    "//p[text()='Only show lines where \"Posting Date\" is']/" +
                                                    "ancestor::div[@class='ms-nav-band-container']//input")
                     );
-                } catch (TimeoutException e){
+                }
+                catch (TimeoutException e) {
                     driver.quit();
                     driver = Driver.createDriver(downloadDir);
                     LoginProcess.loginGLEntry(driver, company);
                     element
-                            = driver.findElement(By.xpath("//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
+                            = driver.findElement(By.xpath(
+                            "//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
                     new Actions(driver).contextClick(element).perform();
                     Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
                     Waits.waitForLoad(driver);
@@ -583,12 +592,13 @@ public class TBExtract extends Extractor {
                     data.add(values);
                 }
                 driver.navigate().refresh();
-                try{
+                try {
                     Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
-                } catch (TimeoutException e){
+                }
+                catch (TimeoutException e) {
                     driver.quit();
                     driver = Driver.createDriver(downloadDir);
-                    LoginProcess.loginGLEntry(driver,company);
+                    LoginProcess.loginGLEntry(driver, company);
                 }
                 this.progressContainer.getProgressBar().setValue(0);
             }
@@ -597,7 +607,7 @@ public class TBExtract extends Extractor {
             this.progressContainer.getProgressBar().setValue(0);
             if (!isCancelled()) {
                 progressContainer.getStatus().setText("Mapping");
-                Balances initialBalance = new TBMapper(date,data,deptCodes,accountNums,this).map();
+                Balances initialBalance = new TBMapper(date, data, deptCodes, accountNums, this).map();
                 //Balances initialBalance = new TBInitialMapper(this,date, depts, accountNums, debitTable,creditTable).map();
                 Path tbFolder = companyFolder.resolve("Trial Balances/");
                 if (!tbFolder.toFile().exists()) {
@@ -612,6 +622,14 @@ public class TBExtract extends Extractor {
                 Path file = tbFolder.resolve(company + "_" + date.replace("/", "_") + ".xlsx");
                 progressContainer.getStatus().setText("Writing");
                 new TBWriter(file, initialBalance, this).makeWorkbook();
+                progressContainer.getStatus().setText("Mapping To Template");
+                List<List<Object>> mapped = new TemplateMapper(this,initialBalance).map();
+                Path templateFile = tbFolder.resolve(company +
+                                                     "_Trial Balance Template_" +
+                                                     date.replace("/", "_") +
+                                                     ".xlsx");
+                progressContainer.getStatus().setText("Writing");
+                new TemplateWriter(this,templateFile,mapped).makeWorkbook();
                 progressContainer.getStatus().setText("Waiting for next month");
                 progressContainer.getProgressBar().setStringPainted(false);
                 progressContainer.getProgressBar().setIndeterminate(true);
@@ -737,7 +755,8 @@ public class TBExtract extends Extractor {
             Waits.waitUntilClickable(driver, By.xpath("//span[contains(text(),'Show')]/.."));
             try {
                 Waits.waitUntilVisible(driver, By.xpath("//table[@summary='G/L Balance by Dim. Matrix']"));
-            } catch (TimeoutException e){
+            }
+            catch (TimeoutException e) {
                 Waits.waitUntilClickable(driver, By.xpath("//span[contains(text(),'Show')]/.."));
                 Waits.waitUntilVisible(driver, By.xpath("//table[@summary='G/L Balance by Dim. Matrix']"));
             }
@@ -870,6 +889,16 @@ public class TBExtract extends Extractor {
          */
         @Override
         protected Void doInBackground() throws Exception {
+            Path companyFolder = downloadDir.resolve(company);
+            if (!companyFolder.toFile().exists()) {
+                try {
+                    Files.createDirectories(companyFolder);
+                }
+                catch (IOException e) {
+                    logger.fatal("Unable to create company folder {}", companyFolder, e);
+                    System.exit(1);
+                }
+            }
             String[] split = date.split("C");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
             LocalDate current;
@@ -923,7 +952,7 @@ public class TBExtract extends Extractor {
                                                 debit,
                                                 credit
                 );
-                Path tbFolder = downloadDir.resolve("Trial Balances/");
+                Path tbFolder = companyFolder.resolve("Trial Balances/");
                 if (!tbFolder.toFile().exists()) {
                     try {
                         Files.createDirectories(tbFolder);
@@ -936,6 +965,14 @@ public class TBExtract extends Extractor {
                 Path file = tbFolder.resolve(company + "_" + formatter.format(current).replace("/", "_") + ".xlsx");
                 progressContainer.getStatus().setText("Writing");
                 new TBWriter(file, balance, this).makeWorkbook();
+                progressContainer.getStatus().setText("Mapping To Template");
+                List<List<Object>> mapped = new TemplateMapper(this,balance).map();
+                Path templateFile = tbFolder.resolve(company +
+                                                     "_Trial Balance Template_" +
+                                                     formatter.format(current).replace("/", "_") +
+                                                     ".xlsx");
+                progressContainer.getStatus().setText("Writing");
+                new TemplateWriter(this,templateFile,mapped).makeWorkbook();
                 progressContainer.getStatus().setText("Waiting for next month");
                 progressContainer.getProgressBar().setStringPainted(false);
                 progressContainer.getProgressBar().setIndeterminate(true);
@@ -985,8 +1022,8 @@ public class TBExtract extends Extractor {
                 }
                 this.getOverallProgress().setValue(this.getOverallProgress().getValue() + 1);
                 removeTask(this);
-                if(tbSelector.get()>datesGL.size()){
-                    Utils.shutdownExecutor(service,logger);
+                if (tbSelector.get() > datesGL.size()) {
+                    Utils.shutdownExecutor(service, logger);
                 }
             }
             super.done();

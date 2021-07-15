@@ -13,6 +13,7 @@ import org.balance.extractor.utils.ExtractorUtils;
 import org.balance.extractor.utils.Waits;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
@@ -137,10 +138,9 @@ public class GLExtractAtDate extends Extractor {
                                         .collect(
                                                 Collectors.toList());
             List<List<Object>> data = new ArrayList<>();
-            getOverallProgress().setMaximum(accountNumbers.size());
-            int accountProgress = 0;
             for (String accountNum : accountNumbers) {
                 if (isCancelled()) {
+                    driver.quit();
                     return null;
                 }
                 this.progressContainer.getStatus().setText("Filtering");
@@ -149,23 +149,42 @@ public class GLExtractAtDate extends Extractor {
                         = driver.findElement(By.xpath("//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
                 new Actions(driver).contextClick(element).perform();
                 Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
-                Waits.waitUntilVisible(driver,
-                                       By.xpath(
-                                               "//p[text()='Only show lines where \"Posting Date\" is']/" +
-                                               "ancestor::div[@class='ms-nav-band-container']//input")
-                );
+                Waits.waitForLoad(driver);
+                try {
+                    Waits.waitUntilVisible(driver,
+                                           By.xpath(
+                                                   "//p[text()='Only show lines where \"Posting Date\" is']/" +
+                                                   "ancestor::div[@class='ms-nav-band-container']//input")
+                    );
+                }
+                catch (TimeoutException e) {
+                    driver.quit();
+                    driver = Driver.createDriver(downloadDir);
+                    LoginProcess.loginGLEntry(driver, company);
+                    element
+                            = driver.findElement(By.xpath(
+                            "//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
+                    new Actions(driver).contextClick(element).perform();
+                    Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
+                    Waits.waitForLoad(driver);
+                    Waits.waitUntilVisible(driver,
+                                           By.xpath(
+                                                   "//p[text()='Only show lines where \"Posting Date\" is']/" +
+                                                   "ancestor::div[@class='ms-nav-band-container']//input")
+                    );
+                }
                 ExtractorUtils.clearAndSetValue(driver,
                                                 By.xpath(
                                                         "//p[text()='Only show lines where \"Posting Date\" is']/" +
                                                         "ancestor::div[@class='ms-nav-band-container']//input"),
                                                 date
                 );
+                Waits.waitForLoad(driver);
                 Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
                 Waits.waitForLoad(driver);
                 this.progressContainer.getProgressBar().setValue(0);
                 element = driver.findElement(By.xpath(
                         "//th[@abbr='G/L Account No.']//a[@title='Open Menu']/ancestor::th"));
-
                 new Actions(driver).contextClick(element).perform();
                 Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
                 Waits.waitUntilVisible(driver,
@@ -181,7 +200,6 @@ public class GLExtractAtDate extends Extractor {
                 );
                 Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
                 Waits.waitForLoad(driver);
-
                 this.progressContainer.getStatus().setText("Scrolling");
                 ExtractorUtils.scrollTable(driver, "General Ledger Entries");
                 List<WebElement> rows = driver.findElements(By.xpath(
@@ -191,12 +209,14 @@ public class GLExtractAtDate extends Extractor {
                 int progress = 0;
                 for (WebElement row : rows) {
                     if (isCancelled()) {
+                        driver.quit();
                         return null;
                     }
                     List<WebElement> cells = row.findElements(By.xpath("./td[@aria-readonly]/*"));
                     List<Object> values = new ArrayList<>();
                     for (int i = 0; i < cells.size(); i++) {
                         if (isCancelled()) {
+                            driver.quit();
                             return null;
                         }
                         WebElement cell = cells.get(i);
@@ -235,10 +255,17 @@ public class GLExtractAtDate extends Extractor {
                     data.add(values);
                 }
                 driver.navigate().refresh();
-                Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
+                try {
+                    Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
+                }
+                catch (TimeoutException e) {
+                    driver.quit();
+                    driver = Driver.createDriver(downloadDir);
+                    LoginProcess.loginGLEntry(driver, company);
+                }
                 this.progressContainer.getProgressBar().setValue(0);
-                this.getOverallProgress().setValue(accountProgress++);
             }
+            this.progressContainer.getAccount().setText("");
 
             Map<String, List<List<Object>>> map = new GLMapper(header, data, deptCodes, this).map();
             this.progressContainer.getProgressBar().setValue(0);

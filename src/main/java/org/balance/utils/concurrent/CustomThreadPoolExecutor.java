@@ -2,6 +2,7 @@ package org.balance.utils.concurrent;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebDriverException;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -171,7 +172,17 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
                 Thread.currentThread().interrupt();
             }
         }
-        if (t != null) {
+        if((t instanceof WebDriverException)){
+            t = t.getCause();
+        }
+        if (t instanceof CancellationException) {
+            shutdownNow();
+        }
+        else if(t instanceof InterruptedException){
+            interrupted = true;
+            Thread.currentThread().interrupt();
+        }
+        else if(t != null){
             shutdownNow();
             executionException = (Exception) t;
         }
@@ -181,10 +192,6 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
     protected void terminated() {
         if (executionException != null) {
             logger.fatal("Error occurred during execution", executionException);
-            System.exit(1);
-        }
-        else if (interrupted) {
-            logger.fatal("Threads have been interrupted");
             System.exit(1);
         }
         super.terminated();

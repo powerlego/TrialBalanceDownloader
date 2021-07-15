@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * @author Nicholas Curl
  */
+@Deprecated
 public class NavData {
 
     /**
@@ -18,6 +19,7 @@ public class NavData {
     private final        Path            companyPath;
     private final        List<NavTables> data;
 
+    @Deprecated
     public NavData(Path companyPath, List<NavTables> data) {
         this.companyPath = companyPath;
         this.data = data;

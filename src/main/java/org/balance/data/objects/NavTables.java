@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * @author Nicholas Curl
  */
+@Deprecated
 public class NavTables {
 
     /**
@@ -19,13 +20,13 @@ public class NavTables {
     private final        List<List<Object>> creditTable;
     private final String dateString;
     public static NavTables EMPTY = new NavTables();
-
+    @Deprecated
     public NavTables(List<List<Object>> debitTable, List<List<Object>> creditTable, String dateString) {
         this.debitTable = debitTable;
         this.creditTable = creditTable;
         this.dateString = dateString;
     }
-
+    @Deprecated
     public NavTables(){
         this.debitTable = new ArrayList<>();
         this.creditTable = new ArrayList<>();

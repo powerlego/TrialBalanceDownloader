@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  * @author Nicholas Curl
  */
+@Deprecated
 public class TBInitialMapper extends Mapper<Balances> {
 
     /**
@@ -31,6 +32,7 @@ public class TBInitialMapper extends Mapper<Balances> {
     private final List<List<Object>> debitTable;
     private final List<List<Object>> creditTable;
 
+    @Deprecated
     public TBInitialMapper(Task<?> task,
                            String period,
                            List<String> depts,
@@ -46,7 +48,7 @@ public class TBInitialMapper extends Mapper<Balances> {
         this.creditTable = creditTable;
     }
 
-
+    @Deprecated
     @Override
     public Balances map() {
         Map<String, Map<String, BigDecimal>> debit = new HashMap<>();

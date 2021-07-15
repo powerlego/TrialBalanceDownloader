@@ -17,7 +17,11 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -246,16 +250,38 @@ public class ExtractorUtils {
     }
 
     public static void scrollTable(Driver driver, String summary) {
-        do {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollTo(0,arguments[0].scrollHeight)",
-                                                        driver.findElement(By.xpath(
-                                                                "//table[@summary='" + summary + "']/.."))
-            );
-        }
-        while (!driver.findElement(By.xpath("//table[@summary='" + summary + "']/../div[2]"))
-                      .getAttribute("class")
-                      .toLowerCase(
-                              Locale.ROOT)
-                      .contains("ms-nav-hidden"));
+        driver.manage().timeouts().setScriptTimeout(5, TimeUnit.MINUTES);
+        ((JavascriptExecutor) driver).executeAsyncScript("var callback = arguments[arguments.length-1];" +
+                                                         "function scrollDown(){" +
+                                                         "    var main = document.evaluate(\"//table[@summary='"+summary+"']/..\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
+                                                         "    var test = document.evaluate(\"//table[@summary='"+summary+"']/../div[2]\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
+                                                         "    function loop(){" +
+                                                         "        if(test.classList.length === 1){" +
+                                                         "            main.scrollTo(0,main.scrollHeight);" +
+                                                         "            setTimeout(loop,0);" +
+                                                         "        }" +
+                                                         "        else{" +
+                                                         "           setTimeout(callback,0)"+
+                                                         "        }" +
+                                                         "    }" +
+                                                         "    loop();" +
+                                                         "}" +
+                                                         "function scrollUp(){" +
+                                                         "  var main = document.evaluate(\"//table[@summary='"+summary+"']/..\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
+                                                         "  var test = document.evaluate(\"//table[@summary='"+summary+"']/../div[1]\", document, null, XPathResult.ANY_TYPE, null).iterateNext();" +
+                                                         "  function up(){" +
+                                                         "      if(test.classList.length === 1){" +
+                                                         "          main.scrollTo(0,0);" +
+                                                         "          setTimeout(up,0);" +
+                                                         "      }" +
+                                                         "      else {" +
+                                                         "          " +
+                                                         "      }" +
+                                                         "  }" +
+                                                         "  up();" +
+                                                         "}" +
+                                                         "setTimeout(scrollUp,0);" +
+                                                         "setTimeout(scrollDown,0);"
+        );
     }
 }

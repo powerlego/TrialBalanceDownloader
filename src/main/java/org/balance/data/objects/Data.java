@@ -9,6 +9,7 @@ import java.util.List;
  * Object to hold the data that is read
  * @author Nicholas Curl
  */
+@Deprecated
 public class Data {
 
     /**
@@ -30,6 +31,7 @@ public class Data {
      * @param header The header row
      * @param data The rest of the data
      */
+    @Deprecated
     public Data(List<Object> header, List<List<Object>> data) {
         this.header = header;
         this.data = data;

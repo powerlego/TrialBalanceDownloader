@@ -11,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -65,6 +66,7 @@ public class Driver extends ChromeDriver {
         ChromeOptions chromeOptions = getOptions(downloadDir);
         Driver driver = new Driver(service, chromeOptions, downloadDir);
         driver.manage().window().maximize();
+        driver.manage().timeouts().setScriptTimeout(1, TimeUnit.MINUTES);
         return driver;
     }
 

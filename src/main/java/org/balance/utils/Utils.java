@@ -29,6 +29,7 @@ public class Utils {
      */
     private static final Logger logger = LogManager.getLogger(Utils.class);
 
+    @Deprecated
     public static ProgressBar createProgressBar(String taskName, int initialMax) {
         return new ProgressBarBuilder().setStyle(ProgressBarStyle.ASCII)
                                        .setMaxRenderedLength(120)

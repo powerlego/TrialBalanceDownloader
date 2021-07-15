@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.balance</groupId>
     <artifactId>TrialBalanceDownloader</artifactId>
-    <version>5.14.2</version>
+    <version>5.15.2</version>
     <name>Trial Balance Downloader</name>
     <packaging>jar</packaging>
     <developers>

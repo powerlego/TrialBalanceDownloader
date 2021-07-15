@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 /**
  * @author Nicholas Curl
  */
+@Deprecated
 public class TrialBalanceExtract {
 
     /**
@@ -43,6 +44,7 @@ public class TrialBalanceExtract {
      */
     private static final Logger logger = LogManager.getLogger(TrialBalanceExtract.class);
 
+    @Deprecated
     public static NavData extract(Driver driver, String company) {
         Path companyFolder = driver.getDownloadDir().resolve(company);
         List<String> dates = generateDates();
@@ -67,11 +69,11 @@ public class TrialBalanceExtract {
         progressBar.close();
         return new NavData(companyFolder, navTables);
     }
-    
+    @Deprecated
     public static void extractAtDate(Driver driver, String company, String date){
         extractAtDate(driver,company,date,false);
     }
-
+    @Deprecated
     public static NavTables extractAtDate(Driver driver, String company, String date, boolean separateTables) {
         Path companyFolder = driver.getDownloadDir().resolve(company);
         if (!companyFolder.toFile().exists()) {
@@ -125,7 +127,7 @@ public class TrialBalanceExtract {
             return NavTables.EMPTY;
         }
     }
-
+    @Deprecated
     public static void extractGLEntries(Driver driver, String company, String date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Path companyFolder = driver.getDownloadDir().resolve(company);
@@ -225,7 +227,7 @@ public class TrialBalanceExtract {
         Path workbook = glEntryFolder.resolve("GLEntries-" + date.replace("/", "_").replace("..", "-") + ".xlsx");
         ExcelFormatter.makeGLWorkbook(workbook, map);
     }
-
+    @Deprecated
     private static List<String> generateDates() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
         List<String> dates = new ArrayList<>();
@@ -245,7 +247,7 @@ public class TrialBalanceExtract {
         }
         return dates;
     }
-
+    @Deprecated
     private static List<List<Object>> getBalances(Driver driver, String dateString, String showAmount, String company) {
         String newDateString = "''..C"+dateString;
         //region Property Selection

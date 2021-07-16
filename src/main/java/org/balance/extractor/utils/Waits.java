@@ -27,11 +27,12 @@ public class Waits {
 
     private static final long DEFAULT_WAIT = 5;
 
-    public static void waitForLoad(WebDriver driver) {
+    public static void waitForLoad(WebDriver driver) throws InterruptedException {
         waitForLoad(driver, DEFAULT_WAIT);
     }
 
-    public static void waitForLoad(WebDriver driver, long timeOutInSeconds) throws TimeoutException {
+    public static void waitForLoad(WebDriver driver, long timeOutInSeconds)
+    throws TimeoutException, InterruptedException {
         ExpectedCondition<Boolean> pageLoadCondition = driver1 -> ((JavascriptExecutor) driver1).executeScript(
                 "return document.readyState").equals("complete");
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
@@ -42,12 +43,14 @@ public class Waits {
             Throwable cause = e.getCause();
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
+                throw (InterruptedException) cause;
             }
         }
         waitUntilJQueryReady(driver, timeOutInSeconds);
     }
 
-    public static void waitUntilAttributeToBe(WebDriver driver, By by, String attribute, String value) {
+    public static void waitUntilAttributeToBe(WebDriver driver, By by, String attribute, String value)
+    throws InterruptedException {
         waitUntilAttributeToBe(driver, DEFAULT_WAIT, by, attribute, value);
     }
 
@@ -56,7 +59,7 @@ public class Waits {
                                               By by,
                                               String attribute,
                                               String value
-    ) {
+    ) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
         try {
             wait.until(ExpectedConditions.attributeToBe(by, attribute, value));
@@ -65,11 +68,13 @@ public class Waits {
             Throwable cause = e.getCause();
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
+                throw (InterruptedException) cause;
             }
         }
     }
 
-    public static void waitUntilAttributeToBe(WebDriver driver, WebElement element, String attribute, String value) {
+    public static void waitUntilAttributeToBe(WebDriver driver, WebElement element, String attribute, String value)
+    throws InterruptedException {
         waitUntilAttributeToBe(driver, DEFAULT_WAIT, element, attribute, value);
     }
 
@@ -78,7 +83,7 @@ public class Waits {
                                               WebElement element,
                                               String attribute,
                                               String value
-    ) {
+    ) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
         try {
             wait.until(ExpectedConditions.attributeToBe(element, attribute, value));
@@ -87,15 +92,17 @@ public class Waits {
             Throwable cause = e.getCause();
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
+                throw (InterruptedException) cause;
             }
         }
     }
 
-    public static void waitUntilClickable(WebDriver driver, By by) throws TimeoutException {
+    public static void waitUntilClickable(WebDriver driver, By by) throws TimeoutException, InterruptedException {
         waitUntilClickable(driver, by, DEFAULT_WAIT);
     }
 
-    public static void waitUntilClickable(WebDriver driver, By by, long timeOutInSeconds) throws TimeoutException {
+    public static void waitUntilClickable(WebDriver driver, By by, long timeOutInSeconds)
+    throws TimeoutException, InterruptedException {
         WebDriverWait driverWait = new WebDriverWait(driver, timeOutInSeconds);
         try {
             driverWait.until(ExpectedConditions.elementToBeClickable(by)).click();
@@ -104,17 +111,19 @@ public class Waits {
             Throwable cause = e.getCause();
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
+                throw (InterruptedException) cause;
             }
         }
         waitForLoad(driver, timeOutInSeconds);
     }
 
-    public static void waitUntilClickable(WebDriver driver, WebElement element) throws TimeoutException {
+    public static void waitUntilClickable(WebDriver driver, WebElement element)
+    throws TimeoutException, InterruptedException {
         waitUntilClickable(driver, element, DEFAULT_WAIT);
     }
 
     public static void waitUntilClickable(WebDriver driver, WebElement element, long timeOutInSeconds)
-    throws TimeoutException {
+    throws TimeoutException, InterruptedException {
         WebDriverWait driverWait = new WebDriverWait(driver, timeOutInSeconds);
         try {
             driverWait.until(ExpectedConditions.elementToBeClickable(element)).click();
@@ -123,17 +132,19 @@ public class Waits {
             Throwable cause = e.getCause();
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
+                throw (InterruptedException) cause;
             }
         }
         waitForLoad(driver, timeOutInSeconds);
     }
 
-    public static void waitUntilFileDownloaded(WebDriver driver, Path downloadDir, long timeout, String fileName) {
+    public static void waitUntilFileDownloaded(WebDriver driver, Path downloadDir, long timeout, String fileName)
+    throws InterruptedException {
         waitUntilFileDownloaded(driver, downloadDir.toFile(), timeout, fileName);
     }
 
     public static void waitUntilFileDownloaded(WebDriver driver, File downloadDir, long timeout, String fileName)
-    throws TimeoutException {
+    throws TimeoutException, InterruptedException {
         FluentWait<WebDriver> wait = new FluentWait<>(driver).withTimeout(Duration.ofMillis(timeout))
                                                              .pollingEvery(Duration.ofMillis(200L));
         FileFilter fileFilter = FileFilterUtils.nameFileFilter(fileName);
@@ -147,16 +158,18 @@ public class Waits {
             Throwable cause = e.getCause();
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
+                throw (InterruptedException) cause;
             }
         }
         Utils.sleep(1000);
     }
 
-    public static void waitUntilVisible(WebDriver driver, By by) throws TimeoutException {
+    public static void waitUntilVisible(WebDriver driver, By by) throws TimeoutException, InterruptedException {
         waitUntilVisible(driver, by, DEFAULT_WAIT);
     }
 
-    public static void waitUntilVisible(WebDriver driver, By by, long timeOutInSeconds) throws TimeoutException {
+    public static void waitUntilVisible(WebDriver driver, By by, long timeOutInSeconds)
+    throws TimeoutException, InterruptedException {
         WebDriverWait driverWait = new WebDriverWait(driver, timeOutInSeconds);
         try {
             driverWait.until(ExpectedConditions.visibilityOfElementLocated(by));
@@ -165,11 +178,12 @@ public class Waits {
             Throwable cause = e.getCause();
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
+                throw (InterruptedException) cause;
             }
         }
     }
 
-    private static void waitUntilJQueryReady(WebDriver webDriver, long timeOutInSeconds) {
+    private static void waitUntilJQueryReady(WebDriver webDriver, long timeOutInSeconds) throws InterruptedException {
         JavascriptExecutor jsExec = (JavascriptExecutor) webDriver;
         Boolean jQueryDefined = (Boolean) jsExec.executeScript("return typeof jQuery != 'undefined'");
         if (jQueryDefined) {
@@ -179,7 +193,7 @@ public class Waits {
         }
     }
 
-    private static void waitForJQueryLoad(WebDriver webDriver, long timeOutInSeconds) {
+    private static void waitForJQueryLoad(WebDriver webDriver, long timeOutInSeconds) throws InterruptedException {
         WebDriverWait jsWait = new WebDriverWait(webDriver, timeOutInSeconds);
         JavascriptExecutor jsExec = (JavascriptExecutor) webDriver;
         ExpectedCondition<Boolean> jQueryLoad = driver -> ((Long) ((JavascriptExecutor) driver)
@@ -194,6 +208,7 @@ public class Waits {
                 Throwable cause = e.getCause();
                 if (cause instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
+                    throw (InterruptedException) cause;
                 }
             }
         }

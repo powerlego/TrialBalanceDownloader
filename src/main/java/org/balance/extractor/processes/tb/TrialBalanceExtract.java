@@ -45,7 +45,7 @@ public class TrialBalanceExtract {
     private static final Logger logger = LogManager.getLogger(TrialBalanceExtract.class);
 
     @Deprecated
-    public static NavData extract(Driver driver, String company) {
+    public static NavData extract(Driver driver, String company) throws InterruptedException {
         Path companyFolder = driver.getDownloadDir().resolve(company);
         List<String> dates = generateDates();
         ProgressBar progressBar = new ProgressBarBuilder().setInitialMax(dates.size())
@@ -70,11 +70,12 @@ public class TrialBalanceExtract {
         return new NavData(companyFolder, navTables);
     }
     @Deprecated
-    public static void extractAtDate(Driver driver, String company, String date){
+    public static void extractAtDate(Driver driver, String company, String date) throws InterruptedException {
         extractAtDate(driver,company,date,false);
     }
     @Deprecated
-    public static NavTables extractAtDate(Driver driver, String company, String date, boolean separateTables) {
+    public static NavTables extractAtDate(Driver driver, String company, String date, boolean separateTables)
+    throws InterruptedException {
         Path companyFolder = driver.getDownloadDir().resolve(company);
         if (!companyFolder.toFile().exists()) {
             try {
@@ -128,7 +129,7 @@ public class TrialBalanceExtract {
         }
     }
     @Deprecated
-    public static void extractGLEntries(Driver driver, String company, String date) {
+    public static void extractGLEntries(Driver driver, String company, String date) throws InterruptedException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Path companyFolder = driver.getDownloadDir().resolve(company);
         if (!companyFolder.toFile().exists()) {
@@ -248,7 +249,8 @@ public class TrialBalanceExtract {
         return dates;
     }
     @Deprecated
-    private static List<List<Object>> getBalances(Driver driver, String dateString, String showAmount, String company) {
+    private static List<List<Object>> getBalances(Driver driver, String dateString, String showAmount, String company)
+    throws InterruptedException {
         String newDateString = "''..C"+dateString;
         //region Property Selection
         //region Rows Selection

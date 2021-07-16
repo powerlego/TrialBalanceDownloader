@@ -7,6 +7,7 @@ import org.balance.extractor.driver.Driver;
 import org.balance.utils.Utils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
@@ -69,7 +70,7 @@ public class ExtractorUtils {
         return periods;
     }
 
-    public static void dimensionCheckAndSelect(Driver driver, String type, String value) {
+    public static void dimensionCheckAndSelect(Driver driver, String type, String value) throws InterruptedException {
         if (!driver.findElement(By.xpath("//a[text()='" + type + "']/..//input[@type='text']"))
                    .getAttribute("value")
                    .equalsIgnoreCase(value)) {
@@ -86,7 +87,7 @@ public class ExtractorUtils {
         }
     }
 
-    public static void checkSelect(Driver driver, String type, String value) {
+    public static void checkSelect(Driver driver, String type, String value) throws InterruptedException {
         if (!driver.findElement(By.xpath("//a[text()='" + type + "']/..//select"))
                    .getAttribute("title")
                    .equalsIgnoreCase(value)) {
@@ -97,7 +98,7 @@ public class ExtractorUtils {
         }
     }
 
-    public static void clearAndSetValue(Driver driver, By by, String value) {
+    public static void clearAndSetValue(Driver driver, By by, String value) throws InterruptedException {
         WebElement input = driver.findElement(by);
         input.clear();
         Waits.waitForLoad(driver);
@@ -110,7 +111,7 @@ public class ExtractorUtils {
         Waits.waitUntilAttributeToBe(driver, input, "value", value);
     }
 
-    public static void checkAndSet(Driver driver, String type, String value) {
+    public static void checkAndSet(Driver driver, String type, String value) throws InterruptedException {
         if (!driver.findElement(By.xpath("//a[text()='" + type + "']/..//input[@type='text']"))
                    .getAttribute("value")
                    .equalsIgnoreCase(value)) {
@@ -118,7 +119,7 @@ public class ExtractorUtils {
         }
     }
 
-    public static List<String> getDeptCodes(Driver driver) {
+    public static List<String> getDeptCodes(Driver driver) throws InterruptedException {
         WebElement element = driver.findElement(By.xpath(
                 "//th[@abbr='Dept Code']//a[@title='Open Menu']/ancestor::th"));
 
@@ -147,7 +148,7 @@ public class ExtractorUtils {
                      .collect(Collectors.toList());
     }
 
-    public static List<String> getAccountNums(Driver driver){
+    public static List<String> getAccountNums(Driver driver) throws InterruptedException {
         List<String> accountNums = new ArrayList<>();
         WebElement element = driver.findElement(By.xpath(
                 "//th[@abbr='G/L Account No.']//a[@title='Open Menu']/ancestor::th"));
@@ -250,38 +251,50 @@ public class ExtractorUtils {
     }
 
     public static void scrollTable(Driver driver, String summary) {
-        driver.manage().timeouts().setScriptTimeout(5, TimeUnit.MINUTES);
-        ((JavascriptExecutor) driver).executeAsyncScript("var callback = arguments[arguments.length-1];" +
-                                                         "function scrollDown(){" +
-                                                         "    var main = document.evaluate(\"//table[@summary='"+summary+"']/..\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
-                                                         "    var test = document.evaluate(\"//table[@summary='"+summary+"']/../div[2]\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
-                                                         "    function loop(){" +
-                                                         "        if(test.classList.length === 1){" +
-                                                         "            main.scrollTo(0,main.scrollHeight);" +
-                                                         "            setTimeout(loop,0);" +
-                                                         "        }" +
-                                                         "        else{" +
-                                                         "           setTimeout(callback,0)"+
-                                                         "        }" +
-                                                         "    }" +
-                                                         "    loop();" +
-                                                         "}" +
-                                                         "function scrollUp(){" +
-                                                         "  var main = document.evaluate(\"//table[@summary='"+summary+"']/..\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
-                                                         "  var test = document.evaluate(\"//table[@summary='"+summary+"']/../div[1]\", document, null, XPathResult.ANY_TYPE, null).iterateNext();" +
-                                                         "  function up(){" +
-                                                         "      if(test.classList.length === 1){" +
-                                                         "          main.scrollTo(0,0);" +
-                                                         "          setTimeout(up,0);" +
-                                                         "      }" +
-                                                         "      else {" +
-                                                         "          " +
-                                                         "      }" +
-                                                         "  }" +
-                                                         "  up();" +
-                                                         "}" +
-                                                         "setTimeout(scrollUp,0);" +
-                                                         "setTimeout(scrollDown,0);"
-        );
+        driver.manage().timeouts().setScriptTimeout(1, TimeUnit.MINUTES);
+        try {
+            ((JavascriptExecutor) driver).executeAsyncScript("var callback = arguments[arguments.length-1];" +
+                                                             "function scrollDown(){" +
+                                                             "    var main = document.evaluate(\"//table[@summary='" +
+                                                             summary +
+                                                             "']/..\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
+                                                             "    var test = document.evaluate(\"//table[@summary='" +
+                                                             summary +
+                                                             "']/../div[2]\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
+                                                             "    function loop(){" +
+                                                             "        if(test.classList.length === 1){" +
+                                                             "            main.scrollTo(0,main.scrollHeight);" +
+                                                             "            setTimeout(loop,0);" +
+                                                             "        }" +
+                                                             "        else{" +
+                                                             "           setTimeout(callback,0)" +
+                                                             "        }" +
+                                                             "    }" +
+                                                             "    loop();" +
+                                                             "}" +
+                                                             "function scrollUp(){" +
+                                                             "  var main = document.evaluate(\"//table[@summary='" +
+                                                             summary +
+                                                             "']/..\",document,null,XPathResult.ANY_TYPE,null).iterateNext();" +
+                                                             "  var test = document.evaluate(\"//table[@summary='" +
+                                                             summary +
+                                                             "']/../div[1]\", document, null, XPathResult.ANY_TYPE, null).iterateNext();" +
+                                                             "  function up(){" +
+                                                             "      if(test.classList.length === 1){" +
+                                                             "          main.scrollTo(0,0);" +
+                                                             "          setTimeout(up,0);" +
+                                                             "      }" +
+                                                             "      else {" +
+                                                             "          " +
+                                                             "      }" +
+                                                             "  }" +
+                                                             "  up();" +
+                                                             "}" +
+                                                             "setTimeout(scrollUp,0);" +
+                                                             "setTimeout(scrollDown,0);"
+            );
+        } catch (TimeoutException e){
+            logger.warn("Timeout",e);
+        }
     }
 }

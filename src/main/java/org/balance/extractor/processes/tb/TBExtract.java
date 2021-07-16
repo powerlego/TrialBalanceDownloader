@@ -18,10 +18,8 @@ import org.balance.extractor.utils.ExtractorUtils;
 import org.balance.extractor.utils.Waits;
 import org.balance.utils.Utils;
 import org.balance.utils.concurrent.CustomExecutors;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 
 import javax.swing.*;
@@ -130,6 +128,48 @@ public class TBExtract extends Extractor {
             this.downloadDir = downloadDir;
         }
 
+        private void filter(String accountNum)
+        throws TimeoutException, NoSuchElementException, StaleElementReferenceException, InterruptedException {
+            WebElement element
+                    = driver.findElement(By.xpath(
+                    "//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
+            new Actions(driver).contextClick(element).perform();
+            Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
+            Waits.waitForLoad(driver);
+            Waits.waitUntilVisible(driver,
+                                   By.xpath(
+                                           "//p[text()='Only show lines where \"Posting Date\" is']/" +
+                                           "ancestor::div[@class='ms-nav-band-container']//input")
+            );
+            ExtractorUtils.clearAndSetValue(driver,
+                                            By.xpath(
+                                                    "//p[text()='Only show lines where \"Posting Date\" is']/" +
+                                                    "ancestor::div[@class='ms-nav-band-container']//input"),
+                                            date
+            );
+            Waits.waitForLoad(driver);
+            Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
+            Waits.waitForLoad(driver);
+            this.progressContainer.getProgressBar().setValue(0);
+            element = driver.findElement(By.xpath(
+                    "//th[@abbr='G/L Account No.']//a[@title='Open Menu']/ancestor::th"));
+            new Actions(driver).contextClick(element).perform();
+            Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
+            Waits.waitUntilVisible(driver,
+                                   By.xpath(
+                                           "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
+                                           "ancestor::div[@class='ms-nav-band-container']//input")
+            );
+            ExtractorUtils.clearAndSetValue(driver,
+                                            By.xpath(
+                                                    "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
+                                                    "ancestor::div[@class='ms-nav-band-container']//input"),
+                                            accountNum
+            );
+            Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
+            Waits.waitForLoad(driver);
+        }
+
         /**
          * Computes a result, or throws an exception if unable to do so.
          *
@@ -195,61 +235,16 @@ public class TBExtract extends Extractor {
                 }
                 this.progressContainer.getStatus().setText("Filtering");
                 this.progressContainer.getAccount().setText(accountNum);
-                WebElement element
-                        = driver.findElement(By.xpath("//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
-                new Actions(driver).contextClick(element).perform();
-                Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
-                Waits.waitForLoad(driver);
-                try {
-                    Waits.waitUntilVisible(driver,
-                                           By.xpath(
-                                                   "//p[text()='Only show lines where \"Posting Date\" is']/" +
-                                                   "ancestor::div[@class='ms-nav-band-container']//input")
-                    );
+                try{
+                    filter(accountNum);
                 }
-                catch (TimeoutException e) {
+                catch (TimeoutException | NoSuchElementException | StaleElementReferenceException e) {
                     driver.quit();
                     driver = Driver.createDriver(downloadDir);
                     LoginProcess.loginGLEntry(driver, company);
-                    element
-                            = driver.findElement(By.xpath(
-                            "//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
-                    new Actions(driver).contextClick(element).perform();
-                    Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
-                    Waits.waitForLoad(driver);
-                    Waits.waitUntilVisible(driver,
-                                           By.xpath(
-                                                   "//p[text()='Only show lines where \"Posting Date\" is']/" +
-                                                   "ancestor::div[@class='ms-nav-band-container']//input")
-                    );
+                    filter(accountNum);
                 }
-                ExtractorUtils.clearAndSetValue(driver,
-                                                By.xpath(
-                                                        "//p[text()='Only show lines where \"Posting Date\" is']/" +
-                                                        "ancestor::div[@class='ms-nav-band-container']//input"),
-                                                date
-                );
-                Waits.waitForLoad(driver);
-                Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
-                Waits.waitForLoad(driver);
                 this.progressContainer.getProgressBar().setValue(0);
-                element = driver.findElement(By.xpath(
-                        "//th[@abbr='G/L Account No.']//a[@title='Open Menu']/ancestor::th"));
-                new Actions(driver).contextClick(element).perform();
-                Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
-                Waits.waitUntilVisible(driver,
-                                       By.xpath(
-                                               "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
-                                               "ancestor::div[@class='ms-nav-band-container']//input")
-                );
-                ExtractorUtils.clearAndSetValue(driver,
-                                                By.xpath(
-                                                        "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
-                                                        "ancestor::div[@class='ms-nav-band-container']//input"),
-                                                accountNum
-                );
-                Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
-                Waits.waitForLoad(driver);
                 this.progressContainer.getStatus().setText("Scrolling");
                 try {
                     Waits.waitUntilClickable(driver,By.xpath("//a[@title='Collapse the FactBox pane']"));
@@ -336,7 +331,7 @@ public class TBExtract extends Extractor {
         protected void done() {
             if (isCancelled()) {
                 this.progressContainer.getStatus().setText("Cancelled");
-                enableUI();
+                this.progressContainer.getProgressBar().setValue(0);
                 driver.quit();
             }
             else {
@@ -397,6 +392,48 @@ public class TBExtract extends Extractor {
             this.downloadDir = downloadDir;
         }
 
+        private void filter(String accountNum, String period)
+        throws TimeoutException, NoSuchElementException, StaleElementReferenceException, InterruptedException {
+            WebElement element
+                    = driver.findElement(By.xpath(
+                    "//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
+            new Actions(driver).contextClick(element).perform();
+            Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
+            Waits.waitForLoad(driver);
+            Waits.waitUntilVisible(driver,
+                                   By.xpath(
+                                           "//p[text()='Only show lines where \"Posting Date\" is']/" +
+                                           "ancestor::div[@class='ms-nav-band-container']//input")
+            );
+            ExtractorUtils.clearAndSetValue(driver,
+                                            By.xpath(
+                                                    "//p[text()='Only show lines where \"Posting Date\" is']/" +
+                                                    "ancestor::div[@class='ms-nav-band-container']//input"),
+                                            period
+            );
+            Waits.waitForLoad(driver);
+            Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
+            Waits.waitForLoad(driver);
+            this.progressContainer.getProgressBar().setValue(0);
+            element = driver.findElement(By.xpath(
+                    "//th[@abbr='G/L Account No.']//a[@title='Open Menu']/ancestor::th"));
+            new Actions(driver).contextClick(element).perform();
+            Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
+            Waits.waitUntilVisible(driver,
+                                   By.xpath(
+                                           "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
+                                           "ancestor::div[@class='ms-nav-band-container']//input")
+            );
+            ExtractorUtils.clearAndSetValue(driver,
+                                            By.xpath(
+                                                    "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
+                                                    "ancestor::div[@class='ms-nav-band-container']//input"),
+                                            accountNum
+            );
+            Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
+            Waits.waitForLoad(driver);
+        }
+
         /**
          * Computes a result, or throws an exception if unable to do so.
          *
@@ -417,10 +454,6 @@ public class TBExtract extends Extractor {
             progressContainer.getPeriod().setText(date);
             progressContainer.getStatus().setText("Logging In");
             String period = "''..C" + date;
-            this.progressContainer.getCompany().setText(company);
-            this.progressContainer.getPeriod().setText(date);
-            this.progressContainer.getStatus().setText("Logging In");
-            LoginProcess.loginGLEntry(driver, company);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
             Path companyFolder = driver.getDownloadDir().resolve(company);
             if (!companyFolder.toFile().exists()) {
@@ -455,61 +488,16 @@ public class TBExtract extends Extractor {
                 }
                 this.progressContainer.getStatus().setText("Filtering");
                 this.progressContainer.getAccount().setText(accountNum);
-                WebElement element
-                        = driver.findElement(By.xpath("//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
-                new Actions(driver).contextClick(element).perform();
-                Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
-                Waits.waitForLoad(driver);
-                try {
-                    Waits.waitUntilVisible(driver,
-                                           By.xpath(
-                                                   "//p[text()='Only show lines where \"Posting Date\" is']/" +
-                                                   "ancestor::div[@class='ms-nav-band-container']//input")
-                    );
+                try{
+                    filter(accountNum,period);
                 }
-                catch (TimeoutException e) {
+                catch (TimeoutException | NoSuchElementException | StaleElementReferenceException e) {
                     driver.quit();
                     driver = Driver.createDriver(downloadDir);
                     LoginProcess.loginGLEntry(driver, company);
-                    element
-                            = driver.findElement(By.xpath(
-                            "//th[@abbr='Posting Date']//a[@title='Open Menu']/ancestor::th"));
-                    new Actions(driver).contextClick(element).perform();
-                    Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
-                    Waits.waitForLoad(driver);
-                    Waits.waitUntilVisible(driver,
-                                           By.xpath(
-                                                   "//p[text()='Only show lines where \"Posting Date\" is']/" +
-                                                   "ancestor::div[@class='ms-nav-band-container']//input")
-                    );
+                    filter(accountNum,period);
                 }
-                ExtractorUtils.clearAndSetValue(driver,
-                                                By.xpath(
-                                                        "//p[text()='Only show lines where \"Posting Date\" is']/" +
-                                                        "ancestor::div[@class='ms-nav-band-container']//input"),
-                                                period
-                );
-                Waits.waitForLoad(driver);
-                Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
-                Waits.waitForLoad(driver);
                 this.progressContainer.getProgressBar().setValue(0);
-                element = driver.findElement(By.xpath(
-                        "//th[@abbr='G/L Account No.']//a[@title='Open Menu']/ancestor::th"));
-                new Actions(driver).contextClick(element).perform();
-                Waits.waitUntilClickable(driver, By.xpath("//a[@title='Filter...']"));
-                Waits.waitUntilVisible(driver,
-                                       By.xpath(
-                                               "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
-                                               "ancestor::div[@class='ms-nav-band-container']//input")
-                );
-                ExtractorUtils.clearAndSetValue(driver,
-                                                By.xpath(
-                                                        "//p[text()='Only show lines where \"G/L Account No.\" is']/" +
-                                                        "ancestor::div[@class='ms-nav-band-container']//input"),
-                                                accountNum
-                );
-                Waits.waitUntilClickable(driver, By.xpath("//button[@title='OK']"));
-                Waits.waitForLoad(driver);
                 this.progressContainer.getStatus().setText("Scrolling");
                 try {
                     Waits.waitUntilClickable(driver,By.xpath("//a[@title='Collapse the FactBox pane']"));
@@ -598,6 +586,7 @@ public class TBExtract extends Extractor {
                     }
                     catch (IOException e) {
                         logger.fatal("Unable to create directory {}", tbFolder, e);
+                        driver.quit();
                         System.exit(1);
                     }
                 }
@@ -654,10 +643,12 @@ public class TBExtract extends Extractor {
                 catch (ExecutionException e) {
                     driver.quit();
                     logger.fatal(e.getMessage(), e);
+                    throw e;
                 }
                 catch (InterruptedException e) {
                     driver.quit();
                     Thread.currentThread().interrupt();
+                    throw e;
                 }
             }
             return null;
@@ -667,7 +658,6 @@ public class TBExtract extends Extractor {
         protected void done() {
             if (isCancelled()) {
                 driver.quit();
-                enableUI();
                 progressContainer.getStatus().setText("Canceled");
                 progressContainer.getProgressBar().setValue(0);
             }
@@ -681,10 +671,15 @@ public class TBExtract extends Extractor {
                 catch (ExecutionException e) {
                     driver.quit();
                     logger.fatal(e.getMessage(), e);
+                    progressContainer.getStatus().setText("Canceled");
+                    progressContainer.getProgressBar().setValue(0);
+                    ui.getCancel().doClick();
                 }
                 catch (InterruptedException e) {
                     driver.quit();
                     Thread.currentThread().interrupt();
+                    progressContainer.getStatus().setText("Canceled");
+                    progressContainer.getProgressBar().setValue(0);
                 }
             }
             super.done();
@@ -754,7 +749,6 @@ public class TBExtract extends Extractor {
             this.progressContainer.getPeriod().setText(formatter.format(current));
             List<String> accountNums = prevBalance.getAccountNums();
             List<String> depts = prevBalance.getDepts();
-            //depts.remove(0);
             Map<String, Map<String, BigDecimal>> prevDebit = prevBalance.getDebit();
             Map<String, Map<String, BigDecimal>> prevCredit = prevBalance.getCredit();
             Map<String, Map<String, BigDecimal>> debitChanges = entry.getDebit();
@@ -839,11 +833,12 @@ public class TBExtract extends Extractor {
                     service.execute(tbFromDate);
                 }
                 catch (ExecutionException e) {
-                    Utils.shutdownExecutor(service,logger);
                     logger.fatal(e.getMessage(), e);
+                    throw e;
                 }
                 catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    throw e;
                 }
             }
             return null;
@@ -852,7 +847,6 @@ public class TBExtract extends Extractor {
         @Override
         protected void done() {
             if (isCancelled()) {
-                enableUI();
                 progressContainer.getStatus().setText("Canceled");
                 progressContainer.getProgressBar().setValue(0);
             }
@@ -867,7 +861,6 @@ public class TBExtract extends Extractor {
                 }
                 catch (ExecutionException e) {
                     logger.fatal(e.getMessage(), e);
-                    enableUI();
                     progressContainer.getStatus().setText("Canceled");
                     progressContainer.getProgressBar().setValue(0);
                 }

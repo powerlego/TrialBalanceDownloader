@@ -256,7 +256,9 @@ public class GLExtractFromDate extends Extractor {
 
         @Override
         protected void done() {
-            driver.quit();
+            if(driver != null) {
+                driver.quit();
+            }
             if (isCancelled()) {
                 this.progressContainer.getStatus().setText("Cancelled");
                 enableUI();

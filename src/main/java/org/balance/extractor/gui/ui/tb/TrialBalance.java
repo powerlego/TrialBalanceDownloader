@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.balance.extractor.gui.ui.components.ProgressGL;
 import org.balance.extractor.gui.verification.FileVerifier;
+import org.balance.extractor.processes.Extractor.Task;
 import org.balance.extractor.processes.tb.TBExtract;
 import org.balance.utils.Utils;
 import org.jdesktop.swingx.*;
@@ -418,8 +419,10 @@ public class TrialBalance extends JPanel {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-            extractor.getTasks().values().forEach(task -> task.cancel(true));
-            getBrowse().setEnabled(true);
+			for (Task<?> task : extractor.getTasks().values()) {
+				task.cancel(true);
+			}
+			getBrowse().setEnabled(true);
             getFileLineInput().setEnabled(true);
             getExtract().setEnabled(true);
             getCompanySelector().setEnabled(true);

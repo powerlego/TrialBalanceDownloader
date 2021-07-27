@@ -5,10 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.balance.extractor.driver.Driver;
 import org.balance.utils.Utils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 
 import java.io.IOException;
@@ -170,59 +167,20 @@ public class ExtractorUtils {
                                                              "not(text()='59000')" +
                                                              "]/ancestor::tr"));
         for (WebElement row : rows) {
-            String accountNumber = row.findElement(By.xpath("./td[2]/a")).getText();
-            String accountName = row.findElement(By.xpath("./td[3]/span")).getText();
-            accountNums.add(accountNumber + " " + accountName);
+            try {
+                String accountNumber = row.findElement(By.xpath("./td[2]/a")).getText();
+                String accountName = row.findElement(By.xpath("./td[3]/span")).getText();
+                accountNums.add(accountNumber + " " + accountName);
+            } catch (WebDriverException e){
+                if (e.getCause() instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                    throw (InterruptedException) e.getCause();
+                }
+            }
         }
 
         return accountNums.stream().parallel().filter(Strings::isNotBlank).collect(Collectors.toList());
     }
-
-    /*public static void createExecutor() {
-        final AppContext appContext = sun.awt.AppContext.getAppContext();
-        ThreadPoolExecutor executorService;
-        ThreadFactory threadFactory =
-                new ThreadFactory() {
-                    final ThreadFactory defaultFactory =
-                            Executors.defaultThreadFactory();
-
-                    public Thread newThread(final Runnable r) {
-                        Thread thread =
-                                defaultFactory.newThread(r);
-                        thread.setName("SwingWorker-"
-                                       + thread.getName());
-                        thread.setDaemon(true);
-                        return thread;
-                    }
-                };
-        executorService =
-                new ThreadPoolExecutor(3, 3,
-                                       10L, TimeUnit.MINUTES,
-                                       new LinkedBlockingQueue<>(),
-                                       threadFactory
-                );
-        appContext.put(SwingWorker.class, executorService);
-        final ExecutorService es = executorService;
-        appContext.addPropertyChangeListener(AppContext.DISPOSED_PROPERTY_NAME,
-                                             pce -> {
-                                                 boolean disposed = (Boolean) pce.getNewValue();
-                                                 if (disposed) {
-                                                     final WeakReference<ExecutorService> executorServiceRef =
-                                                             new WeakReference<>(es);
-                                                     final ExecutorService executorService1 =
-                                                             executorServiceRef.get();
-                                                     if (executorService1 != null) {
-                                                         AccessController.doPrivileged(
-                                                                 (PrivilegedAction<Void>) () -> {
-                                                                     executorService1.shutdown();
-                                                                     return null;
-                                                                 }
-                                                         );
-                                                     }
-                                                 }
-                                             }
-        );
-    }*/
 
     public static Path initialize() {
         System.setProperty("webdriver.chrome.silentOutput", "true");
@@ -250,8 +208,8 @@ public class ExtractorUtils {
         return downloadDirPath;
     }
 
-    public static void scrollTable(Driver driver, String summary) {
-        driver.manage().timeouts().setScriptTimeout(1, TimeUnit.MINUTES);
+    public static boolean scrollTable(Driver driver, String summary) {
+        driver.manage().timeouts().setScriptTimeout(10, TimeUnit.MINUTES);
         try {
             ((JavascriptExecutor) driver).executeAsyncScript("var callback = arguments[arguments.length-1];" +
                                                              "function scrollDown(){" +
@@ -293,8 +251,9 @@ public class ExtractorUtils {
                                                              "setTimeout(scrollUp,0);" +
                                                              "setTimeout(scrollDown,0);"
             );
-        } catch (TimeoutException e){
-            logger.warn("Timeout",e);
+            return true;
+        } catch (TimeoutException | ScriptTimeoutException e){
+            return false;
         }
     }
 }

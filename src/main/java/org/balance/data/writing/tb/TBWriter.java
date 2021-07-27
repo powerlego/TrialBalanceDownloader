@@ -133,12 +133,12 @@ public class TBWriter extends Writer {
             XSSFCell cell = row.getCell(1);
             cell.setCellFormula("SUM(" +
                                 table.getName() +
-                                "[@[" +
+                                "[[#This Row],[" +
                                 table.getColumns().get(2).getName() +
                                 "]:[" +
                                 table.getColumns().get(table.getColumns().size() - 1).getName() +
                                 "]])");
-            evaluator.evaluate(cell);
+            evaluator.evaluateFormulaCell(cell);
             cell.setCellStyle(moneyStyle);
         }
         table.getCTTable().setTotalsRowCount(1);

@@ -28,26 +28,18 @@ public class MainUI extends JXFrame {
         return this;
     }
 
-    public GLMain getGlMain() {
-        return glMain;
-    }
-
-
-    public TBMain getTbMain() {
-        return tbMain;
-    }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		// Generated using JFormDesigner non-commercial license
-		tabbedPane1 = new JTabbedPane();
-		tbMain = new TBMain();
-		glMain = new GLMain();
+		var tabbedPane1 = new JTabbedPane();
+		var tbMain = new TBMain();
+		var glMain = new GLMain();
 
 		//======== this ========
 		setTitle("Trial Balance Extractor");
 		setMinimumSize(new Dimension(800, 10));
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		var contentPane = getContentPane();
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
@@ -65,9 +57,6 @@ public class MainUI extends JXFrame {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
 	// Generated using JFormDesigner non-commercial license
-	private JTabbedPane tabbedPane1;
-	private TBMain tbMain;
-	private GLMain glMain;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 
@@ -108,7 +97,7 @@ public class MainUI extends JXFrame {
         private void initComponents() {
             // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 			// Generated using JFormDesigner non-commercial license
-			trialBalance1 = new TrialBalance();
+			var trialBalance1 = new TrialBalance();
 
 			//======== this ========
 			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -118,7 +107,6 @@ public class MainUI extends JXFrame {
 
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
 		// Generated using JFormDesigner non-commercial license
-		private TrialBalance trialBalance1;
         // JFormDesigner - End of variables declaration  //GEN-END:variables
     }
 }

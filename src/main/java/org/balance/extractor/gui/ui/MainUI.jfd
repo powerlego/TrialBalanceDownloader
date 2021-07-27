@@ -35,7 +35,7 @@
       </void>
       <void method="setProperty">
        <string>defaultCloseOperation</string>
-       <int>2</int>
+       <int>3</int>
       </void>
       <void method="setProperty">
        <string>$sizePolicy</string>
@@ -48,7 +48,7 @@
        </void>
       </void>
       <void method="add">
-       <object class="com.jformdesigner.model.FormContainer">
+       <object class="com.jformdesigner.model.FormContainer" id="FormContainer0">
         <string>javax.swing.JTabbedPane</string>
         <object class="com.jformdesigner.model.FormLayoutManager">
          <class>javax.swing.JTabbedPane</class>
@@ -60,11 +60,17 @@
           <int>10</int>
          </object>
         </void>
+        <void method="auxiliary">
+         <void method="setProperty">
+          <string>JavaCodeGenerator.variableLocal</string>
+          <boolean>true</boolean>
+         </void>
+        </void>
         <void property="name">
          <string>tabbedPane1</string>
         </void>
         <void method="add">
-         <object class="com.jformdesigner.model.FormContainer" id="FormContainer0">
+         <object class="com.jformdesigner.model.FormContainer" id="FormContainer1">
           <string>javax.swing.JPanel</string>
           <object class="com.jformdesigner.model.FormLayoutManager">
            <class>javax.swing.BoxLayout</class>
@@ -79,7 +85,7 @@
             <string>TBMain</string>
            </void>
            <void method="setProperty">
-            <string>JavaCodeGenerator.variableGetter</string>
+            <string>JavaCodeGenerator.variableLocal</string>
             <boolean>true</boolean>
            </void>
           </void>
@@ -87,10 +93,16 @@
            <string>tbMain</string>
           </void>
           <void method="add">
-           <object class="com.jformdesigner.model.FormComponent">
+           <object class="com.jformdesigner.model.FormComponent" id="FormComponent0">
             <string>org.balance.extractor.gui.ui.tb.TrialBalance</string>
             <void property="name">
              <string>trialBalance1</string>
+            </void>
+            <void method="auxiliary">
+             <void method="setProperty">
+              <string>JavaCodeGenerator.variableLocal</string>
+              <boolean>true</boolean>
+             </void>
             </void>
            </object>
           </void>
@@ -104,7 +116,7 @@
          </object>
         </void>
         <void method="add">
-         <object class="com.jformdesigner.model.FormContainer" id="FormContainer1">
+         <object class="com.jformdesigner.model.FormContainer" id="FormContainer2">
           <string>org.jdesktop.swingx.JXPanel</string>
           <object class="com.jformdesigner.model.FormLayoutManager">
            <class>javax.swing.BoxLayout</class>
@@ -115,19 +127,19 @@
           </object>
           <void method="auxiliary">
            <void method="setProperty">
-            <string>JavaCodeGenerator.variableGetter</string>
-            <boolean>true</boolean>
-           </void>
-           <void method="setProperty">
             <string>JavaCodeGenerator.className</string>
             <string>GLMain</string>
+           </void>
+           <void method="setProperty">
+            <string>JavaCodeGenerator.variableLocal</string>
+            <boolean>true</boolean>
            </void>
           </void>
           <void property="name">
            <string>glMain</string>
           </void>
           <void method="add">
-           <object class="com.jformdesigner.model.FormContainer" id="FormContainer2">
+           <object class="com.jformdesigner.model.FormContainer" id="FormContainer3">
             <string>javax.swing.JTabbedPane</string>
             <object class="com.jformdesigner.model.FormLayoutManager">
              <class>javax.swing.JTabbedPane</class>
@@ -142,7 +154,7 @@
              <string>tabbedPane2</string>
             </void>
             <void method="add">
-             <object class="com.jformdesigner.model.FormComponent" id="FormComponent0">
+             <object class="com.jformdesigner.model.FormComponent" id="FormComponent1">
               <string>org.balance.extractor.gui.ui.gl.GLFromDate</string>
               <void property="name">
                <string>gLFromDate1</string>
@@ -163,7 +175,7 @@
              </object>
             </void>
             <void method="add">
-             <object class="com.jformdesigner.model.FormComponent" id="FormComponent1">
+             <object class="com.jformdesigner.model.FormComponent" id="FormComponent2">
               <string>org.balance.extractor.gui.ui.gl.GLAtDate</string>
               <void property="name">
                <string>gLAtDate1</string>

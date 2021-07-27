@@ -16,10 +16,7 @@ import org.balance.data.objects.Data;
 import org.balance.utils.Utils;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -44,8 +41,12 @@ public class DataUtils {
         return getHeader(workbookFile.toFile());
     }
 
-    public synchronized static List<Object> getHeader(File workbookFile) throws IOException, InvalidFormatException {
-        OPCPackage pkg = OPCPackage.open(workbookFile);
+    public synchronized static List<Object> getHeader(InputStream stream) throws IOException, InvalidFormatException {
+        OPCPackage pkg = OPCPackage.open(stream);
+        return getHeader(pkg);
+    }
+
+    private synchronized static List<Object> getHeader(OPCPackage pkg) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(pkg);
         XSSFFormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
         XSSFSheet sheet = workbook.getSheetAt(1);
@@ -57,6 +58,11 @@ public class DataUtils {
         }
         pkg.revert();
         return Utils.trimList(header);
+    }
+
+    public synchronized static List<Object> getHeader(File workbookFile) throws IOException, InvalidFormatException {
+        OPCPackage pkg = OPCPackage.open(workbookFile);
+        return getHeader(pkg);
     }
 
     private static Object getCellValue(XSSFCell cell, XSSFFormulaEvaluator evaluator) {
@@ -104,8 +110,8 @@ public class DataUtils {
         return lastColumn;
     }
 
-    public synchronized static File getResource(Class<?> clazz, String resource) throws URISyntaxException {
-        return new File(Objects.requireNonNull(clazz.getClassLoader().getResource(resource)).toURI());
+    public synchronized static InputStream getResource(Class<?> clazz, String resource) throws URISyntaxException {
+        return Objects.requireNonNull(clazz.getClassLoader().getResourceAsStream(resource));
     }
 
     public static void makeEditable(Path workbookFile) {

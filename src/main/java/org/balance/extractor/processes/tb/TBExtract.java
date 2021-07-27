@@ -24,6 +24,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,6 +35,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -244,14 +246,49 @@ public class TBExtract extends Extractor {
                     LoginProcess.loginGLEntry(driver, company);
                     filter(accountNum);
                 }
+                catch (InterruptedException interruptedException){
+                    Thread.currentThread().interrupt();
+                    throw interruptedException;
+                }
                 this.progressContainer.getProgressBar().setValue(0);
                 this.progressContainer.getStatus().setText("Scrolling");
                 try {
                     Waits.waitUntilClickable(driver,By.xpath("//a[@title='Collapse the FactBox pane']"));
                 } catch (TimeoutException e){
                     Waits.waitUntilClickable(driver,By.xpath("//a[@title='Expand the FactBox pane']"));
+                } catch (InterruptedException interruptedException){
+                    Thread.currentThread().interrupt();
+                    throw interruptedException;
                 }
-                ExtractorUtils.scrollTable(driver, "General Ledger Entries");
+                boolean successful = ExtractorUtils.scrollTable(driver, "General Ledger Entries");
+                while (!successful){
+                    driver.quit();
+                    driver = Driver.createDriver(downloadDir);
+                    LoginProcess.loginGLEntry(driver, company);
+                    try {
+                        filter(accountNum);
+                    }
+                    catch (TimeoutException | NoSuchElementException | StaleElementReferenceException e) {
+                        driver.quit();
+                        driver = Driver.createDriver(downloadDir);
+                        LoginProcess.loginGLEntry(driver, company);
+                        filter(accountNum);
+                    }
+                    catch (InterruptedException interruptedException) {
+                        Thread.currentThread().interrupt();
+                        throw  interruptedException;
+                    }
+                    try {
+                        Waits.waitUntilClickable(driver, By.xpath("//a[@title='Collapse the FactBox pane']"));
+                    }
+                    catch (TimeoutException e) {
+                        Waits.waitUntilClickable(driver, By.xpath("//a[@title='Expand the FactBox pane']"));
+                    }catch (InterruptedException interruptedException){
+                        Thread.currentThread().interrupt();
+                        throw interruptedException;
+                    }
+                    successful = ExtractorUtils.scrollTable(driver, "General Ledger Entries");
+                }
                 List<WebElement> rows = driver.findElements(By.xpath(
                         "//table[@summary = 'General Ledger Entries']/tbody/tr"));
                 this.progressContainer.getProgressBar().setMaximum(Math.max(1, rows.size() * header.size()));
@@ -304,21 +341,10 @@ public class TBExtract extends Extractor {
                     }
                     data.add(values);
                 }
-                driver.navigate().refresh();
-                try {
-                    if(accountNumbers.indexOf(accountNum)== ((int) Math.ceil((accountNumbers.size()+1.0)/2)-1)){
-                        driver.quit();
-                        driver = Driver.createDriver(downloadDir);
-                        LoginProcess.loginGLEntry(driver, company);
-                    }else {
-                        Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
-                    }
-                }
-                catch (TimeoutException e) {
-                    driver.quit();
-                    driver = Driver.createDriver(downloadDir);
-                    LoginProcess.loginGLEntry(driver, company);
-                }
+                driver.quit();
+                driver = Driver.createDriver(downloadDir);
+                LoginProcess.loginGLEntry(driver, company);
+                Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
                 this.progressContainer.getProgressBar().setValue(0);
             }
             this.progressContainer.getAccount().setText("");
@@ -329,41 +355,78 @@ public class TBExtract extends Extractor {
 
         @Override
         protected void done() {
+            if(driver != null) {
+                driver.quit();
+            }
             if (isCancelled()) {
+                if(progressContainer.getProgressBar().isIndeterminate()){
+                    progressContainer.getProgressBar().setIndeterminate(false);
+                    progressContainer.getProgressBar().setStringPainted(true);
+                    progressContainer.getProgressBar().setValue(0);
+                }
+                this.progressContainer.getAccount().setText("");
                 this.progressContainer.getStatus().setText("Cancelled");
                 this.progressContainer.getProgressBar().setValue(0);
-                driver.quit();
             }
             else {
                 try {
-                    this.get();
-                    driver.quit();
-                    this.getOverallProgress().setValue(this.getOverallProgress().getValue() + 1);
-                    this.progressContainer.getCompany().setText("");
-                    this.progressContainer.getPeriod().setText("");
-                    this.progressContainer.getStatus().setText("");
-                    this.progressContainer.getAccount().setText("");
-                    this.progressContainer.getProgressBar().setValue(0);
-                    if (glSelector.get() < datesGL.size() - 1) {
-                        if (!(dateSelector.get() > datesGL.size() - 1)) {
-                            GLFromDate taskFromDate = new GLFromDate(this.progressContainer,
-                                                                     datesGL.get(dateSelector.getAndIncrement()),
-                                                                     company,
-                                                                     this.getOverallProgress(),
-                                                                     downloadDir
-                            );
-                            addTask(taskFromDate);
-                            glSelector.getAndIncrement();
-                            service.execute(taskFromDate);
+                    if(this.get() != null) {
+                        this.getOverallProgress().setValue(this.getOverallProgress().getValue() + 1);
+                        this.progressContainer.getCompany().setText("");
+                        this.progressContainer.getPeriod().setText("");
+                        this.progressContainer.getStatus().setText("");
+                        this.progressContainer.getAccount().setText("");
+                        this.progressContainer.getProgressBar().setValue(0);
+                        if (glSelector.get() < datesGL.size() - 1) {
+                            if (!(dateSelector.get() > datesGL.size() - 1)) {
+                                GLFromDate taskFromDate = new GLFromDate(this.progressContainer,
+                                                                         datesGL.get(dateSelector.getAndIncrement()),
+                                                                         company,
+                                                                         this.getOverallProgress(),
+                                                                         downloadDir
+                                );
+                                addTask(taskFromDate);
+                                glSelector.getAndIncrement();
+                                try {
+                                    service.execute(taskFromDate);
+                                }
+                                catch (RejectedExecutionException ignored) {
+                                }
+                            }
                         }
+                    }
+                    else {
+                        this.progressContainer.getAccount().setText("");
+                        this.progressContainer.getStatus().setText("Cancelled");
+                        this.progressContainer.getProgressBar().setValue(0);
                     }
                 }
                 catch (ExecutionException e) {
-                    driver.quit();
-                    logger.fatal(e.getMessage(), e);
+                    if (e.getCause() instanceof InterruptedException) {
+                        Thread.currentThread().interrupt();
+                    }
+                    if(e.getCause() instanceof WebDriverException){
+                        WebDriverException exception = (WebDriverException) e.getCause();
+                        if(exception.getCause() instanceof InterruptedIOException){
+                            Thread.currentThread().interrupt();
+                        }
+                        else {
+                            logger.fatal(e.getMessage(), e);
+                        }
+                    }
+                    else{
+                        logger.fatal(e.getMessage(), e);
+                    }
                 }
                 catch (InterruptedException e) {
-                    driver.quit();
+                    if(progressContainer.getProgressBar().isIndeterminate()){
+                        progressContainer.getProgressBar().setIndeterminate(false);
+                        progressContainer.getProgressBar().setStringPainted(true);
+                        progressContainer.getProgressBar().setValue(0);
+                    }
+                    this.progressContainer.getAccount().setText("");
+                    this.progressContainer.getStatus().setText("Cancelled");
+                    this.progressContainer.getProgressBar().setValue(0);
                     Thread.currentThread().interrupt();
                 }
             }
@@ -449,237 +512,298 @@ public class TBExtract extends Extractor {
          */
         @Override
         protected Void doInBackground() throws Exception {
-            driver = Driver.createDriver(downloadDir);
-            progressContainer.getCompany().setText(company);
-            progressContainer.getPeriod().setText(date);
-            progressContainer.getStatus().setText("Logging In");
-            String period = "''..C" + date;
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            Path companyFolder = driver.getDownloadDir().resolve(company);
-            if (!companyFolder.toFile().exists()) {
-                try {
-                    Files.createDirectories(companyFolder);
-                }
-                catch (IOException e) {
-                    logger.fatal("Unable to create company folder {}", companyFolder, e);
-                    driver.quit();
-                    System.exit(1);
-                }
-            }
-            List<String> deptCodes = ExtractorUtils.getDeptCodes(driver);
-            new Actions(driver).sendKeys(Keys.ESCAPE).pause(1000).sendKeys(Keys.ESCAPE).perform();
-            List<String> accountNums = ExtractorUtils.getAccountNums(driver);
-            List<String> accountNumbers = accountNums.stream()
-                                                     .parallel()
-                                                     .map(s -> s.split(" ", 2)[0])
-                                                     .collect(Collectors.toList());
-            new Actions(driver).sendKeys(Keys.ESCAPE).pause(1000).sendKeys(Keys.ESCAPE).perform();
-            List<String> header = driver.findElements(By.xpath(
-                    "//table[@summary='General Ledger Entries']/thead/tr/th[not(@abbr='null') and @abbr]"))
-                                        .stream()
-                                        .map(element1 -> element1.getAttribute("abbr"))
-                                        .collect(
-                                                Collectors.toList());
-            List<List<Object>> data = new ArrayList<>();
-            for (String accountNum : accountNumbers) {
-                if (isCancelled()) {
-                    driver.quit();
-                    return null;
-                }
-                this.progressContainer.getStatus().setText("Filtering");
-                this.progressContainer.getAccount().setText(accountNum);
-                try{
-                    filter(accountNum,period);
-                }
-                catch (TimeoutException | NoSuchElementException | StaleElementReferenceException e) {
-                    driver.quit();
-                    driver = Driver.createDriver(downloadDir);
-                    LoginProcess.loginGLEntry(driver, company);
-                    filter(accountNum,period);
-                }
-                this.progressContainer.getProgressBar().setValue(0);
-                this.progressContainer.getStatus().setText("Scrolling");
-                try {
-                    Waits.waitUntilClickable(driver,By.xpath("//a[@title='Collapse the FactBox pane']"));
-                } catch (TimeoutException e){
-                    Waits.waitUntilClickable(driver,By.xpath("//a[@title='Expand the FactBox pane']"));
-                }
-                ExtractorUtils.scrollTable(driver, "General Ledger Entries");
-                List<WebElement> rows = driver.findElements(By.xpath(
-                        "//table[@summary = 'General Ledger Entries']/tbody/tr"));
-                this.progressContainer.getProgressBar().setMaximum(Math.max(1, rows.size() * header.size()));
-                this.progressContainer.getStatus().setText("Extracting");
-                int progress = 0;
-                for (WebElement row : rows) {
-                    if (isCancelled()) {
-                        driver.quit();
-                        return null;
-                    }
-                    List<WebElement> cells = row.findElements(By.xpath("./td[@aria-readonly]/*"));
-                    List<Object> values = new ArrayList<>();
-                    for (int i = 0; i < cells.size(); i++) {
-                        if (isCancelled()) {
-                            driver.quit();
-                            return null;
-                        }
-                        WebElement cell = cells.get(i);
-                        String text = cell.getAttribute("title").trim();
-                        if (text.contains("Open record")) {
-                            Pattern pattern = Pattern.compile("\"(.*?)\"");
-                            Matcher matcher = pattern.matcher(text);
-                            if (matcher.find()) {
-                                text = matcher.group(1);
-                            }
-                            else {
-                                text = "";
-                            }
-                        }
-                        try {
-                            Date extractedDate = simpleDateFormat.parse(text);
-                            values.add(extractedDate);
-                        }
-                        catch (ParseException e) {
-                            if (Pattern.compile("\\d\\.\\d{2}").matcher(text).find() && i == 4) {
-                                try {
-                                    values.add(new BigDecimal(text.replace(",", "")));
-                                }
-                                catch (NumberFormatException formatException) {
-                                    logger.fatal("Unable to get amount {}", text, formatException);
-                                    driver.quit();
-                                    System.exit(1);
-                                }
-                            }
-                            else {
-                                values.add(text);
-                            }
-                        }
-                        this.progressContainer.getProgressBar().setValue(progress++);
-                    }
-                    data.add(values);
-                }
-                driver.navigate().refresh();
-                try {
-                    if(accountNumbers.indexOf(accountNum)== ((int) Math.ceil((accountNumbers.size()+1.0)/2)-1)){
-                        driver.quit();
-                        driver = Driver.createDriver(downloadDir);
-                        LoginProcess.loginGLEntry(driver, company);
-                    }else {
-                        Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
-                    }
-                }
-                catch (TimeoutException e) {
-                    driver.quit();
-                    driver = Driver.createDriver(downloadDir);
-                    LoginProcess.loginGLEntry(driver, company);
-                }
-                this.progressContainer.getProgressBar().setValue(0);
-            }
-            this.progressContainer.getAccount().setText("");
-            this.progressContainer.getProgressBar().setValue(0);
-            if (!isCancelled()) {
-                progressContainer.getStatus().setText("Mapping");
-                Balances initialBalance = new TBMapper(date, data, deptCodes, accountNums, this).map();
-                Path tbFolder = companyFolder.resolve("Trial Balances/");
-                if (!tbFolder.toFile().exists()) {
+            try {
+                driver = Driver.createDriver(downloadDir);
+                progressContainer.getCompany().setText(company);
+                progressContainer.getPeriod().setText(date);
+                progressContainer.getStatus().setText("Logging In");
+                LoginProcess.loginGLEntry(driver, company);
+                String period = "''..C" + date;
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                Path companyFolder = driver.getDownloadDir().resolve(company);
+                if (!companyFolder.toFile().exists()) {
                     try {
-                        Files.createDirectories(tbFolder);
+                        Files.createDirectories(companyFolder);
                     }
                     catch (IOException e) {
-                        logger.fatal("Unable to create directory {}", tbFolder, e);
+                        logger.fatal("Unable to create company folder {}", companyFolder, e);
                         driver.quit();
                         System.exit(1);
                     }
                 }
-                Path file = tbFolder.resolve(company + "_" + date.replace("/", "_") + ".xlsx");
-                progressContainer.getStatus().setText("Writing");
-                new TBWriter(file, initialBalance, this).makeWorkbook();
-                progressContainer.getStatus().setText("Mapping To Template");
-                List<List<Object>> mapped = new TemplateMapper(this, initialBalance).map();
-                Path templateFile = tbFolder.resolve(company +
-                                                     "_Trial Balance Template_" +
-                                                     date.replace("/", "_") +
-                                                     ".xlsx");
-                progressContainer.getStatus().setText("Writing");
-                new TemplateWriter(this, templateFile, mapped).makeWorkbook();
-                progressContainer.getStatus().setText("Waiting for next month");
-                progressContainer.getProgressBar().setStringPainted(false);
-                progressContainer.getProgressBar().setIndeterminate(true);
-                try {
-                    String[] split = date.split("C");
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
-                    LocalDate current;
+                List<String> deptCodes = ExtractorUtils.getDeptCodes(driver);
+                new Actions(driver).sendKeys(Keys.ESCAPE).pause(1000).sendKeys(Keys.ESCAPE).perform();
+                List<String> accountNums = ExtractorUtils.getAccountNums(driver);
+                List<String> accountNumbers = accountNums.stream()
+                                                         .parallel()
+                                                         .map(s -> s.split(" ", 2)[0])
+                                                         .collect(Collectors.toList());
+                new Actions(driver).sendKeys(Keys.ESCAPE).pause(1000).sendKeys(Keys.ESCAPE).perform();
+                List<String> header = driver.findElements(By.xpath(
+                        "//table[@summary='General Ledger Entries']/thead/tr/th[not(@abbr='null') and @abbr]"))
+                                            .stream()
+                                            .map(element1 -> element1.getAttribute("abbr"))
+                                            .collect(
+                                                    Collectors.toList());
+                List<List<Object>> data = new ArrayList<>();
+                for (String accountNum : accountNumbers) {
+                    if (isCancelled()) {
+                        driver.quit();
+                        return null;
+                    }
+                    this.progressContainer.getStatus().setText("Filtering");
+                    this.progressContainer.getAccount().setText(accountNum);
                     try {
-                        current = LocalDate.from(formatter.parse(split[1]));
+                        filter(accountNum, period);
                     }
-                    catch (ArrayIndexOutOfBoundsException e) {
-                        current = LocalDate.from(formatter.parse(split[0]));
+                    catch (TimeoutException | NoSuchElementException | StaleElementReferenceException e) {
+                        driver.quit();
+                        driver = Driver.createDriver(downloadDir);
+                        LoginProcess.loginGLEntry(driver, company);
+                        filter(accountNum, period);
                     }
-                    LocalDate nextMonth = current.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
-                    if (getTasks().get(formatter.format(nextMonth)) instanceof GLFromDate) {
-                        GLFromDate gl = (GLFromDate) getTasks().get(formatter.format(nextMonth));
-                        service.setMaximumPoolSize(4);
-                        service.setCorePoolSize(4);
-                        GLEntries nextMonthEntry = gl.get();
-                        SwingUtilities.invokeLater(() -> {
-                            progressContainer.getProgressBar().setStringPainted(true);
-                            progressContainer.getProgressBar().setIndeterminate(false);
-                        });
-                        TBFromDate tbFromDate = new TBFromDate(progressContainer,
-                                                               formatter.format(nextMonth),
-                                                               company,
-                                                               nextMonthEntry,
-                                                               initialBalance,
-                                                               getOverallProgress(),
-                                                               downloadDir
-                        );
-                        addTask(tbFromDate);
-                        tbSelector.getAndIncrement();
-                        service.execute(tbFromDate);
+                    catch (InterruptedException interruptedException) {
+                        Thread.currentThread().interrupt();
+                        throw interruptedException;
                     }
-                    else {
-                        ui.getCancel().doClick();
+                    this.progressContainer.getProgressBar().setValue(0);
+                    this.progressContainer.getStatus().setText("Scrolling");
+                    try {
+                        Waits.waitUntilClickable(driver, By.xpath("//a[@title='Collapse the FactBox pane']"));
+                    }
+                    catch (TimeoutException e) {
+                        Waits.waitUntilClickable(driver, By.xpath("//a[@title='Expand the FactBox pane']"));
+                    } catch (InterruptedException exception){
+                        Thread.currentThread().interrupt();
+                        throw exception;
+                    }
+                    boolean successful = ExtractorUtils.scrollTable(driver, "General Ledger Entries");
+                    while (!successful){
+                        driver.quit();
+                        driver = Driver.createDriver(downloadDir);
+                        LoginProcess.loginGLEntry(driver, company);
+                        try {
+                            filter(accountNum, period);
+                        }
+                        catch (TimeoutException | NoSuchElementException | StaleElementReferenceException e) {
+                            driver.quit();
+                            driver = Driver.createDriver(downloadDir);
+                            LoginProcess.loginGLEntry(driver, company);
+                            filter(accountNum, period);
+                        }
+                        catch (InterruptedException interruptedException) {
+                            Thread.currentThread().interrupt();
+                            throw  interruptedException;
+                        }
+                        try {
+                            Waits.waitUntilClickable(driver, By.xpath("//a[@title='Collapse the FactBox pane']"));
+                        }
+                        catch (TimeoutException e) {
+                            Waits.waitUntilClickable(driver, By.xpath("//a[@title='Expand the FactBox pane']"));
+                        }
+                        successful = ExtractorUtils.scrollTable(driver, "General Ledger Entries");
+                    }
+                    List<WebElement> rows = driver.findElements(By.xpath(
+                            "//table[@summary = 'General Ledger Entries']/tbody/tr"));
+                    this.progressContainer.getProgressBar().setMaximum(Math.max(1, rows.size() * header.size()));
+                    this.progressContainer.getStatus().setText("Extracting");
+                    int progress = 0;
+                    for (WebElement row : rows) {
+                        if (isCancelled()) {
+                            driver.quit();
+                            return null;
+                        }
+                        List<WebElement> cells = row.findElements(By.xpath("./td[@aria-readonly]/*"));
+                        List<Object> values = new ArrayList<>();
+                        for (int i = 0; i < cells.size(); i++) {
+                            if (isCancelled()) {
+                                driver.quit();
+                                return null;
+                            }
+                            WebElement cell = cells.get(i);
+                            String text = cell.getAttribute("title").trim();
+                            if (text.contains("Open record")) {
+                                Pattern pattern = Pattern.compile("\"(.*?)\"");
+                                Matcher matcher = pattern.matcher(text);
+                                if (matcher.find()) {
+                                    text = matcher.group(1);
+                                }
+                                else {
+                                    text = "";
+                                }
+                            }
+                            try {
+                                Date extractedDate = simpleDateFormat.parse(text);
+                                values.add(extractedDate);
+                            }
+                            catch (ParseException e) {
+                                if (Pattern.compile("\\d\\.\\d{2}").matcher(text).find() && i == 4) {
+                                    try {
+                                        values.add(new BigDecimal(text.replace(",", "")));
+                                    }
+                                    catch (NumberFormatException formatException) {
+                                        logger.fatal("Unable to get amount {}", text, formatException);
+                                        driver.quit();
+                                        System.exit(1);
+                                    }
+                                }
+                                else {
+                                    values.add(text);
+                                }
+                            }
+                            this.progressContainer.getProgressBar().setValue(progress++);
+                        }
+                        data.add(values);
+                    }
+                    driver.navigate().refresh();
+                    try {
+                        if (accountNumbers.indexOf(accountNum) ==
+                            ((int) Math.ceil((accountNumbers.size() + 1.0) / 2) - 1)) {
+                            driver.quit();
+                            driver = Driver.createDriver(downloadDir);
+                            LoginProcess.loginGLEntry(driver, company);
+                        }
+                        else {
+                            Waits.waitUntilVisible(driver, By.xpath("//h1[@title='General Ledger Entries']"));
+                        }
+                    }
+                    catch (TimeoutException e) {
+                        driver.quit();
+                        driver = Driver.createDriver(downloadDir);
+                        LoginProcess.loginGLEntry(driver, company);
+                    }
+                    this.progressContainer.getProgressBar().setValue(0);
+                }
+                this.progressContainer.getAccount().setText("");
+                this.progressContainer.getProgressBar().setValue(0);
+                if (!isCancelled()) {
+                    progressContainer.getStatus().setText("Mapping");
+                    Balances initialBalance = new TBMapper(date, data, deptCodes, accountNums, this).map();
+                    Path tbFolder = companyFolder.resolve("Trial Balances/");
+                    if (!tbFolder.toFile().exists()) {
+                        try {
+                            Files.createDirectories(tbFolder);
+                        }
+                        catch (IOException e) {
+                            logger.fatal("Unable to create directory {}", tbFolder, e);
+                            driver.quit();
+                            System.exit(1);
+                        }
+                    }
+                    Path file = tbFolder.resolve(company + "_" + date.replace("/", "_") + ".xlsx");
+                    progressContainer.getStatus().setText("Writing");
+                    new TBWriter(file, initialBalance, this).makeWorkbook();
+                    progressContainer.getStatus().setText("Mapping To Template");
+                    List<List<Object>> mapped = new TemplateMapper(this, initialBalance).map();
+                    Path templateFile = tbFolder.resolve(company +
+                                                         "_Trial Balance Template_" +
+                                                         date.replace("/", "_") +
+                                                         ".xlsx");
+                    progressContainer.getStatus().setText("Writing");
+                    new TemplateWriter(this, templateFile, mapped).makeWorkbook();
+                    progressContainer.getStatus().setText("Waiting for next month");
+                    progressContainer.getProgressBar().setStringPainted(false);
+                    progressContainer.getProgressBar().setIndeterminate(true);
+                    try {
+                        String[] split = date.split("C");
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
+                        LocalDate current;
+                        try {
+                            current = LocalDate.from(formatter.parse(split[1]));
+                        }
+                        catch (ArrayIndexOutOfBoundsException e) {
+                            current = LocalDate.from(formatter.parse(split[0]));
+                        }
+                        LocalDate nextMonth = current.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+                        if (getTasks().get(formatter.format(nextMonth)) instanceof GLFromDate) {
+                            GLFromDate gl = (GLFromDate) getTasks().get(formatter.format(nextMonth));
+                            service.setMaximumPoolSize(4);
+                            service.setCorePoolSize(4);
+                            GLEntries nextMonthEntry = gl.get();
+                            SwingUtilities.invokeLater(() -> {
+                                progressContainer.getProgressBar().setStringPainted(true);
+                                progressContainer.getProgressBar().setIndeterminate(false);
+                            });
+                            TBFromDate tbFromDate = new TBFromDate(progressContainer,
+                                                                   formatter.format(nextMonth),
+                                                                   company,
+                                                                   nextMonthEntry,
+                                                                   initialBalance,
+                                                                   getOverallProgress(),
+                                                                   downloadDir
+                            );
+                            addTask(tbFromDate);
+                            tbSelector.getAndIncrement();
+                            service.execute(tbFromDate);
+                        }
+                        else {
+                            ui.getCancel().doClick();
+                        }
+                    }
+                    catch (ExecutionException e) {
+                        driver.quit();
+                        logger.fatal(e.getMessage(), e);
+                        throw e;
+                    }
+                    catch (InterruptedException e) {
+                        driver.quit();
+                        Thread.currentThread().interrupt();
+                        throw e;
                     }
                 }
-                catch (ExecutionException e) {
-                    driver.quit();
-                    logger.fatal(e.getMessage(), e);
-                    throw e;
-                }
-                catch (InterruptedException e) {
-                    driver.quit();
-                    Thread.currentThread().interrupt();
-                    throw e;
-                }
+            } catch (InterruptedException interruptedException){
+                Thread.currentThread().interrupt();
+                throw interruptedException;
             }
             return null;
         }
 
         @Override
         protected void done() {
-            if (isCancelled()) {
+            if(driver != null) {
                 driver.quit();
+            }
+            if (isCancelled()) {
+                if(progressContainer.getProgressBar().isIndeterminate()){
+                    progressContainer.getProgressBar().setIndeterminate(false);
+                    progressContainer.getProgressBar().setStringPainted(true);
+                    progressContainer.getProgressBar().setValue(0);
+                }
+                this.progressContainer.getAccount().setText("");
                 progressContainer.getStatus().setText("Canceled");
                 progressContainer.getProgressBar().setValue(0);
             }
             else {
                 try {
                     this.get();
-                    driver.quit();
                     this.getOverallProgress().setValue(this.getOverallProgress().getValue() + 1);
                     removeTask(this);
                 }
                 catch (ExecutionException e) {
-                    driver.quit();
-                    logger.fatal(e.getMessage(), e);
+                    if(progressContainer.getProgressBar().isIndeterminate()){
+                        progressContainer.getProgressBar().setIndeterminate(false);
+                        progressContainer.getProgressBar().setStringPainted(true);
+                        progressContainer.getProgressBar().setValue(0);
+                    }
+                    this.progressContainer.getAccount().setText("");
                     progressContainer.getStatus().setText("Canceled");
                     progressContainer.getProgressBar().setValue(0);
-                    ui.getCancel().doClick();
+                    if (e.getCause() instanceof InterruptedException) {
+                        Thread.currentThread().interrupt();
+                    }
+                    else {
+                        logger.fatal(e.getMessage(), e);
+                    }
                 }
                 catch (InterruptedException e) {
-                    driver.quit();
-                    Thread.currentThread().interrupt();
+                    if(progressContainer.getProgressBar().isIndeterminate()){
+                        progressContainer.getProgressBar().setIndeterminate(false);
+                        progressContainer.getProgressBar().setStringPainted(true);
+                        progressContainer.getProgressBar().setValue(0);
+                    }
                     progressContainer.getStatus().setText("Canceled");
                     progressContainer.getProgressBar().setValue(0);
+                    Thread.currentThread().interrupt();
                 }
             }
             super.done();
@@ -755,6 +879,8 @@ public class TBExtract extends Extractor {
             Map<String, Map<String, BigDecimal>> creditChanges = entry.getCredit();
             Map<String, Map<String, BigDecimal>> debit = new HashMap<>();
             Map<String, Map<String, BigDecimal>> credit = new HashMap<>();
+            int progress = 0;
+            this.progressContainer.getProgressBar().setMaximum(accountNums.size()*depts.size());
             for (String accountNum : accountNums) {
                 if (isCancelled()) {
                     return null;
@@ -777,6 +903,7 @@ public class TBExtract extends Extractor {
                     BigDecimal newCreditValue = prevCreditValue.add(creditChangeValue);
                     newDebitAccount.put(dept, newDebitValue);
                     newCreditAccount.put(dept, newCreditValue);
+                    this.progressContainer.getProgressBar().setValue(progress++);
                 }
                 debit.put(accountNum, newDebitAccount);
                 credit.put(accountNum, newCreditAccount);
@@ -847,6 +974,12 @@ public class TBExtract extends Extractor {
         @Override
         protected void done() {
             if (isCancelled()) {
+                if(progressContainer.getProgressBar().isIndeterminate()){
+                    progressContainer.getProgressBar().setIndeterminate(false);
+                    progressContainer.getProgressBar().setStringPainted(true);
+                    progressContainer.getProgressBar().setValue(0);
+                }
+                this.progressContainer.getAccount().setText("");
                 progressContainer.getStatus().setText("Canceled");
                 progressContainer.getProgressBar().setValue(0);
             }
@@ -861,10 +994,24 @@ public class TBExtract extends Extractor {
                 }
                 catch (ExecutionException e) {
                     logger.fatal(e.getMessage(), e);
+                    if(progressContainer.getProgressBar().isIndeterminate()){
+                        progressContainer.getProgressBar().setIndeterminate(false);
+                        progressContainer.getProgressBar().setStringPainted(true);
+                        progressContainer.getProgressBar().setValue(0);
+                    }
+                    this.progressContainer.getAccount().setText("");
                     progressContainer.getStatus().setText("Canceled");
                     progressContainer.getProgressBar().setValue(0);
                 }
                 catch (InterruptedException e) {
+                    if(progressContainer.getProgressBar().isIndeterminate()){
+                        progressContainer.getProgressBar().setIndeterminate(false);
+                        progressContainer.getProgressBar().setStringPainted(true);
+                        progressContainer.getProgressBar().setValue(0);
+                    }
+                    this.progressContainer.getAccount().setText("");
+                    progressContainer.getStatus().setText("Canceled");
+                    progressContainer.getProgressBar().setValue(0);
                     Thread.currentThread().interrupt();
                 }
             }

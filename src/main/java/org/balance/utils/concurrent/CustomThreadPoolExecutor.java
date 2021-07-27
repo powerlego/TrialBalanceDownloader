@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriverException;
 
+import java.io.InterruptedIOException;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -179,6 +180,10 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
             shutdownNow();
         }
         else if(t instanceof InterruptedException){
+            interrupted = true;
+            Thread.currentThread().interrupt();
+        }
+        else if(t instanceof InterruptedIOException){
             interrupted = true;
             Thread.currentThread().interrupt();
         }
